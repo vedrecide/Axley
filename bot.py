@@ -8,7 +8,7 @@ class Axley(commands.AutoShardedBot):
         self.cogs = os.listdir('./cogs')
         self.owner = 709613711475605544
         super().__init__(
-            command_prefix='!',
+            command_prefix=self.prefix,
             intents=discord.Intents.all(),
             owner_id=self.owner
         )
@@ -18,6 +18,9 @@ class Axley(commands.AutoShardedBot):
                 self.load_extension(f'cogs.{file[:-3]}')
             except Exception as exc:
                 raise exc
+
+        def prefix(self, bot, msg):
+            return commands.when_mentioned_or('+')(bot, msg)
 
         def login(self):
             with open('./config/config.json', 'r') as file:

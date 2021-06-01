@@ -8,7 +8,8 @@ class Axley(commands.AutoShardedBot):
         super().__init__(
             command_prefix=self.prefix,
             intents=discord.Intents.all(),
-            owner_id=709613711475605544
+            owner_id=709613711475605544,
+            case_insensitive=True
         )
 
         for file in os.listdir('./cogs'):
@@ -21,9 +22,5 @@ class Axley(commands.AutoShardedBot):
     def prefix(self, bot, msg):
         return commands.when_mentioned_or('+')(bot, msg)
 
-    def login(self):
-        with open('./config/config.json', 'r') as file:
-            config = json.load(file)
-            token = config['token']
-
-        super().run(token, reconnect=True)
+    async def on_ready(self):
+        print('[*] Ready')

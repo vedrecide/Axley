@@ -21,6 +21,14 @@ class Axley(commands.AutoShardedBot):
 
     def prefix(self, bot, msg):
         return commands.when_mentioned_or('+')(bot, msg)
+    
+    def emojis(self):
+        emojis = {
+            'tick': '<a:whitetick:849331491699556412>',
+            'cross': '<a:redcross:849331580300165140>'
+        }
+
+        return emojis
 
     async def on_ready(self):
         print('[*] Ready')

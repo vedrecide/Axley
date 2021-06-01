@@ -6,6 +6,7 @@ class Moderation(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.emojis = self.bot.emojis()
 
     @commands.command(name='Purge', description='Purges a given amount of messages mentioned, also works with mentioning members at the end')
     @commands.guild_only()
@@ -18,7 +19,7 @@ class Moderation(commands.Cog):
                     await ctx.message.reply('The amount must not be negative..', mention_author=False)
                 else:
                     await ctx.channel.purge(limit=amount+1)
-                    await ctx.send('Purged `{}`'.format(amount))
+                    await ctx.send('{} Purged `{}`'.format(self.emojis['tick'], amount))
             except ValueError:
                 await ctx.message.reply('The amount must be an natural number', mention_author=False)
         else:
@@ -30,7 +31,7 @@ class Moderation(commands.Cog):
                         return m.author == member
 
                     await ctx.channel.purge(limit=amount, check=check)
-                    await ctx.send('Purged `{}` from **{}**'.format(amount, member))
+                    await ctx.send('{} Purged `{}` from **{}**'.format(self.emojis['tick'], amount, member))
             except ValueError:
                 await ctx.message.reply('The amount must be an natural number', mention_author=False)
 

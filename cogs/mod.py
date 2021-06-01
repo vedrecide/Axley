@@ -7,7 +7,7 @@ class Moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='Purge', description='Deletes a given amount of messages sent in the chat or by a specific user')
+    @commands.command(name='Purge', description='Deletes a given amount of messages sent in the chat or by a specific user..')
     @commands.guild_only()
     @commands.bot_has_guild_permissions(manage_messages=True)
     @commands.has_permissions(manage_messages=True)

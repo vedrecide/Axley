@@ -18,6 +18,7 @@ class Moderation(commands.Cog):
                     await ctx.message.reply('The amount must not be negative..', mention_author=False)
                 else:
                     await ctx.channel.purge(limit=amount+1)
+                    await ctx.send('Purged `{}`'.format(amount))
             except ValueError:
                 await ctx.message.reply('The amount must be an natural number', mention_author=False)
         else:
@@ -28,7 +29,8 @@ class Moderation(commands.Cog):
                     def check(m):
                         return m.author == member
 
-                    await ctx.channel.purge(limit=amount+1, check=check)
+                    await ctx.channel.purge(limit=amount, check=check)
+                    await ctx.send('Purged `{}` from **{}**'.format(amount, member))
             except ValueError:
                 await ctx.message.reply('The amount must be an natural number', mention_author=False)
 

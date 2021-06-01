@@ -21,12 +21,12 @@ class Axley(commands.AutoShardedBot):
                 except Exception as exc:
                     raise exc
 
-        def prefix(self, bot, msg):
-            return commands.when_mentioned_or('+')(bot, msg)
+    def prefix(self, bot, msg):
+        return commands.when_mentioned_or('+')(bot, msg)
 
-        def login(self):
-            with open('./config/config.json', 'r') as file:
-                config = json.load(file)
-                token = config['token']
+    def login(self):
+        with open('./config/config.json', 'r') as file:
+            config = json.load(file)
+            token = config['token']
 
-            super().run(token, reconnect=True)
+        super().run(token, reconnect=True)

@@ -7,6 +7,7 @@ class Axley(commands.AutoShardedBot):
     def __init__(self):
         self.cogs = os.listdir('./cogs')
         self.owner = 709613711475605544
+        self.emojis = []
         super().__init__(
             command_prefix=self.prefix,
             intents=discord.Intents.all(),
@@ -14,10 +15,11 @@ class Axley(commands.AutoShardedBot):
         )
 
         for file in self.cogs:
-            try:
-                self.load_extension(f'cogs.{file[:-3]}')
-            except Exception as exc:
-                raise exc
+            if file.endswith('.py'):
+                try:
+                    self.load_extension(f'cogs.{file[:-3]}')
+                except Exception as exc:
+                    raise exc
 
         def prefix(self, bot, msg):
             return commands.when_mentioned_or('+')(bot, msg)

@@ -5,16 +5,13 @@ from discord.ext import commands
 class Axley(commands.AutoShardedBot):
 
     def __init__(self):
-        self.cogs = os.listdir('./cogs')
-        self.owner = 709613711475605544
-        self.emojis = []
         super().__init__(
             command_prefix=self.prefix,
             intents=discord.Intents.all(),
-            owner_id=self.owner
+            owner_id=709613711475605544
         )
 
-        for file in self.cogs:
+        for file in os.listdir('./cogs'):
             if file.endswith('.py'):
                 try:
                     self.load_extension(f'cogs.{file[:-3]}')

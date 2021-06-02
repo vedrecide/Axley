@@ -5,7 +5,7 @@ from discord.ext.commands import bot
 
 class ErrorHandler(commands.Cog):
 
-    def __init__(self):
+    def __init__(self, bot):
         self.bot = bot
 
     @commands.Cog.listener()

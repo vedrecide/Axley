@@ -11,7 +11,7 @@ class Moderation(commands.Cog):
     @commands.guild_only()
     @commands.bot_has_guild_permissions(manage_messages=True)
     @commands.has_permissions(manage_messages=True)
-    async def purge(self, ctx, amount: int, member: discord.Member = None):
+    async def purge(self, ctx: commands.Context, amount: int, member: discord.Member = None):
         if member == None:
             try:
                 if amount <= -1:

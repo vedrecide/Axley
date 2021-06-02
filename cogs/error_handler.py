@@ -7,13 +7,14 @@ class ErrorHandler(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.emojis = self.bot.emojis()
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.MemberNotFound):
             embed = discord.Embed(
                 color=discord.Color.dark_red(),
-                description='{} Mentioned member is not in the guild'.format(self.bot.emojis['tick'])
+                description='{} Mentioned member is not in the guild'.format(self.emojis['tick'])
             )
 
             await ctx.send(embed=embed)

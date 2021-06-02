@@ -6,6 +6,7 @@ class Moderation(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.emojis = self.bot.emojis()
 
     @commands.command(name='Purge', description='Purges a given amount of messages mentioned, also works with mentioning members at the end')
     @commands.guild_only()
@@ -20,7 +21,7 @@ class Moderation(commands.Cog):
                     await ctx.channel.purge(limit=amount+1)
                     embed = discord.Embed(
                         color=discord.Color.dark_red(),
-                        description='{} Purged `{}` messages'.format(self.bot.emojis['tick'], amount)
+                        description='{} Purged `{}` messages'.format(self.emojis['tick'], amount)
                     )
                     await ctx.send(embed=embed)
             except ValueError:

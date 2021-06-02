@@ -8,7 +8,7 @@ class ErrorHandler(commands.Cog):
     def __init__(self):
         self.bot = bot
 
-    @commands.Cog.listner()
+    @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.MemberNotFound):
             embed = discord.Embed(

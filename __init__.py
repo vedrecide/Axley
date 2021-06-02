@@ -5,4 +5,4 @@ __version__ = '1.0.0'
 from .bot import Axley
 
 # Cogs
-from .cogs.mod import Moderation
+from .cogs.moderation import Moderation

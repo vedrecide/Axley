@@ -19,7 +19,11 @@ class Moderation(commands.Cog):
                     await ctx.message.reply('The amount must not be negative..', mention_author=False)
                 else:
                     await ctx.channel.purge(limit=amount+1)
-                    await ctx.send('{} Purged `{}`'.format(self.emojis['tick'], amount))
+                    embed = discord.Embed(
+                        color=discord.Color.dark_red(),
+                        description='{} Purged `{}` messages'.format(self.emojis['tick'], amount)
+                    )
+                    await ctx.send(embed=embed)
             except ValueError:
                 await ctx.message.reply('The amount must be an natural number', mention_author=False)
         else:

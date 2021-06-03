@@ -14,7 +14,7 @@ class ErrorHandler(commands.Cog):
         if isinstance(error, commands.MemberNotFound):
             embed = discord.Embed(
                 color=discord.Color.dark_red(),
-                description='{} Mentioned member is not in the guild'.format(self.emojis['tick'])
+                description='{} Mentioned member is not in the guild'.format(self.emojis['cross'])
             )
 
             await ctx.send(embed=embed)

@@ -43,5 +43,80 @@ class Moderation(commands.Cog):
             except ValueError:
                 await ctx.message.reply('The amount must be an natural number', mention_author=False)
 
+    @commands.command(name='Kick', description="Kick's the mentioned user out of the server")
+    @commands.guild_only()
+    @commands.bot_has_permissions(kick_members=True)
+    @commands.has_permissions(kick_members=True)
+    async def kick(self, ctx: commands.Context, member: discord.Member, *, reason = "No reason provided"):
+        if ctx.author.top_role.position < member.top_role.position:
+            embed = discord.Embed(
+                color=discord.Color.dark_purple(),
+                description="{} Can't kick **{}** due to role heirarchy".format(self.emojis['cross'], member)
+            )
+            return await ctx.send(embed=embed)
+
+        embed = discord.Embed(
+            color=discord.Color.dark_purple(),
+            description="{} **{}** has been kicked `|` **Reason:** {}".format(self.emojis['tick'], member, reason)
+        )
+        await ctx.send(embed=embed)
+        await member.kick(reason=reason)
+
+    @commands.command(
+        name='Ban',
+        aliases=['Hackban'],
+        description="Ban's the mentioned user out of the server"
+    )
+    @commands.guild_only()
+    @commands.bot_has_permissions(ban_members=True)
+    @commands.has_permissions(ban_members=True)
+    async def ban(self, ctx: commands.Context, member: discord.User, *, reason = "No reason provided"):
+        if ctx.author.top_role.position < member.top_role.position:
+            embed = discord.Embed(
+                color=discord.Color.dark_purple(),
+                description="{} Can't ban **{}** due to role heirarchy".format(self.emojis['cross'], member)
+            )
+            return await ctx.send(embed=embed)
+
+        embed = discord.Embed(
+            color=discord.Color.dark_purple(),
+            description="{} **{}** has been banned `|` **Reason:** {}".format(self.emojis['tick'], member, reason)
+        )
+        await ctx.send(embed=embed)
+        await member.ban(reason=reason)
+
+    @commands.command(name='Unban', description="Unban's the mentioned user if in Guild ban lists")
+    @commands.guild_only()
+    @commands.bot_has_permissions(ban_members=True)
+    @commands.has_permissions(ban_members=True)
+    async def unban(self, ctx: commands.Context, member: int):
+        # Not the best Unban command but meh..
+        try:
+            try:
+                user = await self.bot.fetch_user(id)
+                await ctx.guild.unban(user)
+
+                embed = discord.Embed(
+                    color=discord.Color.blue(),
+                    description="{} **{}** has been unbanned".format(self.emojis['tick'], member)
+                )
+                await ctx.send(embed=embed)
+            except Exception as exc:
+                embed = discord.Embed(
+                    color=discord.Color.blue(),
+                    description="{} **{}** isn't banned and isn't in the guild ban list\nOr there is an exception that has occured, Reported to the Support server!".format(self.emojis['cross'], member)
+                )
+
+                await ctx.send(embed=embed)
+
+        except ValueError:
+            embed = discord.Embed(
+                color=discord.Color.blue(),
+                description="{} Unban command includes only the `ID` of the User\n[Learn More Here!]".format(self.emojis['cross'])
+            )
+
+            await ctx.send(embed=embed)
+
+
 def setup(bot):
     bot.add_cog(Moderation(bot))

@@ -78,12 +78,20 @@ class Moderation(commands.Cog):
             )
             return await ctx.send(embed=embed)
 
-        embed = discord.Embed(
-            color=discord.Color.dark_purple(),
-            description="{} **{}** has been banned `|` **Reason:** {}".format(self.emojis['tick'], member, reason)
-        )
-        await ctx.send(embed=embed)
-        await member.ban(reason=reason)
+        try:
+            embed = discord.Embed(
+                color=discord.Color.dark_purple(),
+                description="{} **{}** has been banned `|` **Reason:** {}".format(self.emojis['tick'], member, reason)
+            )
+            await ctx.send(embed=embed)
+            await member.ban(reason=reason)
+        except Exception as exc:
+            embed = discord.Embed(
+                color=discord.Color.dark_purple(),
+                description="{} Looks like **{}** isn't found (Not in the bot's reach sadly)".format(self.emojis['cross'], member)
+            )
+            await ctx.send(embed=embed)
+
 
     @commands.command(name='Unban', description="Unban's the mentioned user if in Guild ban lists")
     @commands.guild_only()
@@ -93,8 +101,7 @@ class Moderation(commands.Cog):
         # Not the best Unban command but meh..
         try:
             try:
-                user = await self.bot.fetch_user(id)
-                await ctx.guild.unban(user)
+                await ctx.guild.unban(discord.Object(member))
 
                 embed = discord.Embed(
                     color=discord.Color.blue(),

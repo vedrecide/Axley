@@ -1,12 +1,14 @@
 import discord, asyncio
 
 from discord.ext import commands
+from .utils.converters import TimeConverter
 
 class Moderation(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.emojis = self.bot.emojis()
+        self.emojis = self.bot.cool_emojis
+        self.multiplier = {'s': 1, 'm': 60, 'h': 3600, 'd': 86400, 'w': 604800}
 
     @commands.command(name='Purge', description='Purges a given amount of messages mentioned, also works with mentioning members at the end')
     @commands.guild_only()
@@ -17,6 +19,8 @@ class Moderation(commands.Cog):
             try:
                 if amount <= -1:
                     await ctx.message.reply('The amount must not be negative..', mention_author=False)
+                elif amount > 100:
+                    await ctx.message.reply('The amount must not exceed 100', mention_author=False)
                 else:
                     await ctx.channel.purge(limit=amount+1)
                     embed = discord.Embed(
@@ -100,7 +104,7 @@ class Moderation(commands.Cog):
     async def unban(self, ctx: commands.Context, member: int):
         # Not the best Unban command but meh..
         try:
-            try:
+            #try:
                 await ctx.guild.unban(discord.Object(member))
 
                 embed = discord.Embed(
@@ -108,13 +112,13 @@ class Moderation(commands.Cog):
                     description="{} **{}** has been unbanned".format(self.emojis['tick'], member)
                 )
                 await ctx.send(embed=embed)
-            except Exception as exc:
-                embed = discord.Embed(
-                    color=discord.Color.blue(),
-                    description="{} **{}** isn't banned and isn't in the guild ban list\nOr there is an exception that has occured, Reported to the Support server!".format(self.emojis['cross'], member)
-                )
+            #except Exception as exc:
+                #embed = discord.Embed(
+                    #color=discord.Color.blue(),
+                    #description="{} **{}** isn't banned and isn't in the guild ban list\nOr there is an exception that has occured, Reported to the Support server!".format(self.emojis['cross'], member)
+                #)
 
-                await ctx.send(embed=embed)
+                #await ctx.send(embed=embed)
 
         except ValueError:
             embed = discord.Embed(

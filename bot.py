@@ -5,10 +5,15 @@ from discord.ext import commands
 class Axley(commands.AutoShardedBot):
 
     def __init__(self):
+        self.cool_emojis = {
+            'tick': '<a:whitetick:849331491699556412>',
+            'cross': '<a:redcross:849331580300165140>'
+        }
+        self.owner = 709613711475605544
         super().__init__(
             command_prefix=self.prefix,
             intents=discord.Intents.all(),
-            owner_id=709613711475605544,
+            owner_id=self.owner,
             case_insensitive=True
         )
 
@@ -21,14 +26,6 @@ class Axley(commands.AutoShardedBot):
 
     def prefix(self, bot, msg):
         return commands.when_mentioned_or('+')(bot, msg)
-    
-    def emojis(self):
-        emojis = {
-            'tick': '<a:whitetick:849331491699556412>',
-            'cross': '<a:redcross:849331580300165140>'
-        }
-
-        return emojis
 
     async def on_ready(self):
         print('[*] Ready')

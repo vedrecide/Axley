@@ -130,3 +130,6 @@ dmypy.json
 
 # Config File
 config/config.json
+
+# File where I test some stuff locally
+.py

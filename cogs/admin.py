@@ -13,7 +13,7 @@ class Admin(commands.Cog):
 
     @commands.command(name='Eval', description='Evaluates a Python code')
     @commands.is_owner()
-    async def _eval(self, ctx, *, code):
+    async def eval(self, ctx, *, code):
         code = clean_code(code)
 
         local_variables = {
@@ -51,6 +51,26 @@ class Admin(commands.Cog):
         )
 
         await pager.start(ctx)
+
+    @commands.command(name='Reload', description='Reloads a cog..')
+    @commands.is_owner()
+    async def reload(self, ctx, cog: str):
+        try:
+            self.bot.reload_extension(f'{cog}')
+            embed = discord.Embed(
+                color=discord.Color.dark_theme(),
+                description='{} Successfully reloaded `{}`'.format(self.emojis['tick'], cog)
+            )
+            await ctx.message.reply(embed=embed, mention_author=False)
+        except Exception as exc:
+            embed = discord.Embed(
+                color=discord.Color.dark_theme(),
+                title='{} Error Occured'.format(self.emojis['cross']),
+                description='```yaml\n{}```'.format(exc)
+            )
+
+            await ctx.message.reply(embed=embed, mention_author=False)
+
 
 def setup(bot):
     bot.add_cog(Admin(bot))

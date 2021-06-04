@@ -1,4 +1,5 @@
 import discord, asyncio
+from discord import user
 
 from discord.ext import commands
 from .utils.converters import TimeConverter
@@ -65,6 +66,27 @@ class Moderation(commands.Cog):
         )
         await ctx.send(embed=embed)
         await member.kick(reason=reason)
+
+    @commands.command(name='Softban', description="Softban's the mentioned user out of the server")
+    @commands.guild_only()
+    @commands.bot_has_permissions(kick_members=True)
+    @commands.has_permissions(kick_members=True)
+    async def softban(self, ctx: commands.Context, member: discord.Member, *, reason = "No reason provided"):
+        if ctx.author.top_role.position < member.top_role.position:
+            embed = discord.Embed(
+                color=discord.Color.dark_purple(),
+                description="{} Can't kick **{}** due to role heirarchy".format(self.emojis['cross'], member)
+            )
+            return await ctx.send(embed=embed)
+
+        embed = discord.Embed(
+            color=discord.Color.dark_purple(),
+            description="{} **{}** has been softbanned `|` **Reason:** {}".format(self.emojis['tick'], member, reason)
+        )
+        await ctx.send(embed=embed)
+        await ctx.guild.ban(user)
+        await asyncio.sleep(1)
+        await ctx.guild.unban(member)
 
     @commands.command(
         name='Ban',

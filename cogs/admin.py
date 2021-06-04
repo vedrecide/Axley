@@ -61,6 +61,7 @@ class Admin(commands.Cog):
                 color=discord.Color.dark_theme(),
                 description='{} Successfully reloaded `{}`'.format(self.emojis['tick'], cog)
             )
+            await ctx.message.add_reaction('✅')
             await ctx.message.reply(embed=embed, mention_author=False)
         except Exception as exc:
             embed = discord.Embed(
@@ -69,6 +70,7 @@ class Admin(commands.Cog):
                 description='```yaml\n{}```'.format(exc)
             )
 
+            await ctx.message.add_reaction('❎')
             await ctx.message.reply(embed=embed, mention_author=False)
 
 

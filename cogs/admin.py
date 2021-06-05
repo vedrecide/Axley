@@ -204,18 +204,6 @@ class Admin(commands.Cog):
     )
     async def rtfm(self, ctx, *, query: str = None):
         key = "latest"
-        if query is not None:
-            if query.lower() == "rtfm":
-                await ctx.send(
-                    embed=discord.Embed.from_dict(
-                        {
-                            "title": "Read The Fucking Manual",
-                            "description": "You expect me to know?",
-                            "footer": {"text": "Imagine including easter eggs, couldn't be me :/"},
-                        }
-                    )
-                )
-
         await self.do_rtfm(ctx, key, query)
 
 '''

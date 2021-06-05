@@ -30,9 +30,9 @@ class ErrorHandler(commands.Cog):
             )
 
             await ctx.send(embed=embed)
-            
+
         else:
-            pass
+            raise error
 
 
 def setup(bot):

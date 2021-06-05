@@ -1,5 +1,4 @@
 import discord, asyncio
-from discord import user
 
 from discord.ext import commands
 from .utils.converters import TimeConverter
@@ -19,9 +18,17 @@ class Moderation(commands.Cog):
         if member == None:
             try:
                 if amount <= -1:
-                    await ctx.message.reply('The amount must not be negative..', mention_author=False)
-                elif amount > 100:
-                    await ctx.message.reply('The amount must not exceed 100', mention_author=False)
+                    embed = discord.Embed(
+                        color=discord.Color.dark_orange(),
+                        description="{} The amount must not be negative".format(self.emojis['cross'])
+                    )
+                    await ctx.message.reply(embed=embed, mention_author=False)
+                elif amount >= 100:
+                    embed = discord.Embed(
+                        color=discord.Color.dark_orange(),
+                        description="{} The amount must not exceed 100 or equal to it".format(self.emojis['cross'])
+                    )
+                    await ctx.message.reply(embed=embed, mention_author=False)
                 else:
                     await ctx.channel.purge(limit=amount+1)
                     embed = discord.Embed(
@@ -30,11 +37,19 @@ class Moderation(commands.Cog):
                     )
                     await ctx.send(embed=embed)
             except ValueError:
-                await ctx.message.reply('The amount must be an natural number', mention_author=False)
+                embed = discord.Embed(
+                    color=discord.Color.dark_orange(),
+                    description="{} The amount must be an natural number".format(self.emojis['cross'])
+                )
+                await ctx.message.reply(embed=embed, mention_author=False)
         else:
             try:
                 if amount <= -1:
-                    await ctx.message.reply('The amount must not be negative..', mention_author=False)
+                    embed = discord.Embed(
+                        color=discord.Color.dark_orange(),
+                        description="{} The amount must not be negative".format(self.emojis['cross'])
+                    )
+                    await ctx.message.reply(embed=embed, mention_author=False)
                 else:
                     def check(m):
                         return m.author == member
@@ -46,7 +61,20 @@ class Moderation(commands.Cog):
                     )
                     await ctx.send(embed=embed)
             except ValueError:
-                await ctx.message.reply('The amount must be an natural number', mention_author=False)
+                embed = discord.Embed(
+                    color=discord.Color.dark_orange(),
+                    description="{} The amount must be an natural number".format(self.emojis['cross'])
+                )
+                await ctx.message.reply(embed=embed, mention_author=False)
+
+    @purge.error
+    async def purge_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            embed = discord.Embed(
+                color=discord.Color.dark_orange(),
+                description="{} You are missing `Manage Messages` Permission(s) to run this command".format(self.emojis['cross'])
+            )
+            await ctx.send(embed=embed)
 
     @commands.command(name='Kick', description="Kick's the mentioned user out of the server")
     @commands.guild_only()
@@ -67,6 +95,15 @@ class Moderation(commands.Cog):
         await ctx.send(embed=embed)
         await member.kick(reason=reason)
 
+    @kick.error
+    async def kick_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            embed = discord.Embed(
+                color=discord.Color.dark_orange(),
+                description="{} You are missing `Kick Members` Permission(s) to run this command".format(self.emojis['cross'])
+            )
+            await ctx.send(embed=embed)
+
     @commands.command(name='Softban', description="Softban's the mentioned user out of the server")
     @commands.guild_only()
     @commands.bot_has_permissions(kick_members=True)
@@ -84,9 +121,18 @@ class Moderation(commands.Cog):
             description="{} **{}** has been softbanned `|` **Reason:** {}".format(self.emojis['tick'], member, reason)
         )
         await ctx.send(embed=embed)
-        await ctx.guild.ban(user)
+        await ctx.guild.ban(member)
         await asyncio.sleep(1)
         await ctx.guild.unban(member)
+
+    @softban.error
+    async def softban_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            embed = discord.Embed(
+                color=discord.Color.dark_orange(),
+                description="{} You are missing `Ban Members` Permission(s) to run this command".format(self.emojis['cross'])
+            )
+            await ctx.send(embed=embed)
 
     @commands.command(
         name='Ban',
@@ -115,6 +161,15 @@ class Moderation(commands.Cog):
             embed = discord.Embed(
                 color=discord.Color.dark_purple(),
                 description="{} Looks like **{}** isn't found (Not in the bot's reach sadly)".format(self.emojis['cross'], member)
+            )
+            await ctx.send(embed=embed)
+
+    @ban.error
+    async def ban_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            embed = discord.Embed(
+                color=discord.Color.dark_orange(),
+                description="{} You are missing `Ban Members` Permission(s) to run this command".format(self.emojis['cross'])
             )
             await ctx.send(embed=embed)
 
@@ -150,6 +205,45 @@ class Moderation(commands.Cog):
 
             await ctx.send(embed=embed)
 
+    @unban.error
+    async def unban_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            embed = discord.Embed(
+                color=discord.Color.dark_orange(),
+                description="{} You are missing `Ban Members` Permission(s) to run this command".format(self.emojis['cross'])
+            )
+            await ctx.send(embed=embed)
+
+    @commands.command(name='Tempban', description='Temporary ban somebody if the duration is correct')
+    @commands.guild_only()
+    @commands.has_permissions(ban_members=True)
+    @commands.bot_has_guild_permissions(ban_members=True)
+    async def tempban(self, ctx: commands.Context, member: discord.User, duration: TimeConverter, *, reason = "No reason provided"):
+        if ctx.author.top_role.position < member.top_role.position:
+            embed = discord.Embed(
+                color=discord.Color.dark_purple(),
+                description="{} Can't tempban **{}** due to role heirarchy".format(self.emojis['cross'], member)
+            )
+            return await ctx.send(embed=embed)
+
+        amount, unit = duration
+        await ctx.guild.ban(member)
+        embed = discord.Embed(
+            color=discord.Color.purple(),
+            description="{} **{}** has been tempbanned for `{}` `|` **Reason:** {}".format(self.emojis['tick'], member, duration, reason)
+        )
+        await ctx.send(embed=embed)
+        await asyncio.sleep(amount * self.multiplier[unit])
+        await ctx.guild.unban(member)
+
+    @tempban.error
+    async def tempban_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            embed = discord.Embed(
+                color=discord.Color.dark_orange(),
+                description="{} You are missing `Ban Members` Permission(s) to run this command".format(self.emojis['cross'])
+            )
+            await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Moderation(bot))

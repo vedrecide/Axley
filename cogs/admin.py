@@ -5,6 +5,14 @@ from .utils.paginator import clean_code
 from .utils.paginator import Pag
 from traceback import format_exception
 
+'''
+Probably cba to make a RTFM command so I took it from 
+https://github.com/MenuDocs/Pyro/blob/master/cogs/docs.py
+
+Thanks to Menudocs for that, Probably not a public command but for my server as well as for me lol
+(if pleb is seeing this, just understand that I can't be bothered to make my own rtfm xD)
+'''
+
 class SphinxObjectFileReader:
     BUFSIZE = 16 * 1024
 
@@ -206,16 +214,6 @@ class Admin(commands.Cog):
     async def rtfm(self, ctx, *, query: str = None):
         key = "latest"
         await self.do_rtfm(ctx, key, query)
-
-'''
-Probably cba to make a RTFM command so I took it from 
-https://github.com/MenuDocs/Pyro/blob/master/cogs/docs.py
-
-Thanks to Menudocs for that, Probably not a public command but for my server as well as for me lol
-(if pleb is seeing this, just understand that I can't be bothered to make my own rtfm xD)
-'''
-
-
 
 def setup(bot):
     bot.add_cog(Admin(bot))

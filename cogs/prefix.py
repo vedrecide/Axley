@@ -69,5 +69,37 @@ class Prefix(commands.Cog):
                 )
                 await ctx.send(embed=embed)
 
+    @prefix.error
+    async def prefix_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            embed = discord.Embed(
+                color=discord.Color.dark_orange(),
+                description="{} You are missing `Manage Messages` Permission(s) to run this command".format(self.emojis['cross'])
+            )
+            await ctx.send(embed=embed)
+
+    @commands.command(
+        name='ViewPrefix',
+        description="View the guild's prefix"
+    )
+    @commands.guild_only()
+    async def viewprefix(self, ctx):
+        data = self.collection.find_one({'_id': ctx.guild.id})
+
+        if not data:
+            embed = discord.Embed(
+                color=discord.Color.magenta(),
+                description="{} **{}'s** prefix is `+`".format(self.emojis['tick'], ctx.guild)
+            )
+            await ctx.message.reply(embed=embed, mention_author=False)
+
+        else:
+            embed = discord.Embed(
+                color=discord.Color.magenta(),
+                description="{} **{}'s** prefix is `{}`".format(self.emojis['tick'], ctx.guild, data['prefix'])
+            )
+            await ctx.message.reply(embed=embed, mention_author=False)
+
+
 def setup(bot):
     bot.add_cog(Prefix(bot))

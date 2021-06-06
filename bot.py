@@ -1,4 +1,4 @@
-import discord, os, json, pymongo, io, re, zlib, aiohttp
+import discord, os, json, pymongo
 
 from discord.ext import commands
 
@@ -100,4 +100,5 @@ class Axley(commands.AutoShardedBot):
         return commands.when_mentioned_or(prefix)(bot, msg)
 
     async def on_ready(self):
+        await self.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'+help'))
         print('[*] Ready')

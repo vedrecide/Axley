@@ -1,4 +1,4 @@
-import discord, asyncio
+import discord, asyncio, datetime
 
 from discord.ext import commands
 from .utils.converters import TimeConverter
@@ -9,6 +9,8 @@ class Moderation(commands.Cog):
         self.bot = bot
         self.emojis = self.bot.cool_emojis
         self.multiplier = {'s': 1, 'm': 60, 'h': 3600, 'd': 86400, 'w': 604800}
+        db = self.bot.db()
+        self.warn_collection = db['warnings']
 
     @commands.command(name='Purge', description='Purges a given amount of messages mentioned, also works with mentioning members at the end')
     @commands.guild_only()
@@ -244,6 +246,141 @@ class Moderation(commands.Cog):
                 description="{} You are missing `Ban Members` Permission(s) to run this command".format(self.emojis['cross'])
             )
             await ctx.send(embed=embed)
+
+    @commands.command(name='Warn', aliases=['Punish', 'W'], description='Adds a warning to the member')
+    @commands.guild_only()
+    @commands.has_permissions(manage_messages=True)
+    async def warn(self, ctx: commands.Context, member: discord.Member, *, reason="No reason provided"):
+        if ctx.author.top_role.position < member.top_role.position:
+            embed = discord.Embed(
+                color=discord.Color.dark_purple(),
+                description="{} Can't warn **{}** due to role heirarchy".format(self.emojis['cross'], member)
+            )
+            return await ctx.send(embed=embed)
+
+        if member == ctx.author:
+            embed = discord.Embed(
+                color=discord.Color.dark_purple(),
+                description="{} You can't warn yourself".format(self.emojis['cross'], member)
+            )
+            return await ctx.send(embed=embed)
+
+        user_id = {"user": member.id}
+
+        if self.warn_collection.count_documents({}) == 0:
+            self.warn_collection.insert_one({"user": member.id, "guild": ctx.guild.id, "warnings": []})
+
+        elif self.warn_collection.count_documents(user_id) == 0:
+            self.warn_collection.insert_one({"user": member.id, "guild": ctx.guild.id, "warnings": []})
+
+        warns = self.warn_collection.find_one(user_id)
+
+        warns['warnings'].append({
+            'warned_at': datetime.datetime.utcnow().strftime('%d/%m/%Y - %I:%M %p'),
+            'responsible_moderator': f'{ctx.author}',
+            'moderator_id': f'{ctx.author.id}',
+            'reason': str(reason)
+        })
+
+        self.warn_collection.update_one({"user": member.id, "guild": ctx.guild.id}, {"$set": {"warnings": warns["warnings"]}})
+
+        embed = discord.Embed(
+            color=discord.Color.light_grey(),
+            description="{} **{}** has been warned `|` **Reason:** {}".format(self.emojis['tick'], member, reason)
+        )
+        await ctx.send(embed=embed)
+
+    @commands.command(name='Warnings', aliases=['Warns'], description="View the warnings of other members using this command")
+    @commands.guild_only()
+    @commands.has_permissions(manage_messages=True)
+    async def warnings(self, ctx: commands.Context, member: discord.Member):
+
+        warns = self.warn_collection.find_one({'user': member.id, 'guild': ctx.guild.id})
+
+        if not warns:
+            embed = discord.Embed(
+                color=discord.Color.light_grey(),
+                description="{} **{}** doesn't have any warnings".format(self.emojis['cross'], member)
+            )
+
+            await ctx.send(embed=embed)
+
+        else:
+            number_of_warns = len(warns['warnings'])
+            embed = discord.Embed(color=discord.Color.light_grey(), timestamp=ctx.message.created_at)
+            embed.set_author(name="{}".format(member), icon_url="{}".format(member.avatar_url))
+            embed.set_footer(text='Requested by {}'.format(ctx.author), icon_url="{}".format(ctx.author.avatar_url))
+            for i in range(number_of_warns):
+                reason = warns['warnings'][i]['reason']
+                mod = warns['warnings'][i]['responsible_moderator']
+                time = warns['warnings'][i]['warned_at']
+                mod_id = warns['warnings'][i]['moderator_id']
+
+                embed.add_field(name='#{} | {}'.format(i+1, time), value="🔖 **Reason:** {}\n🧑‍🦱 **Mod:** {}\n🔩 **Mod ID:** {}".format(reason, mod, mod_id))
+
+            await ctx.send("📖 **{}** has `{}` warnings in total".format(member, number_of_warns), embed=embed)
+
+    @commands.command(
+        name='ClearWarn',
+        aliases=['DeleteWarn', 'Delwarn', 'Dw'],
+        description="Clear's the warning of the member mentioned if the Warn ID is correct"
+    )
+    @commands.guild_only()
+    @commands.has_permissions(manage_messages=True)
+    async def delwarn(self, ctx: commands.Context, member: discord.Member, num: str):
+        if ctx.author.top_role.position < member.top_role.position:
+            embed = discord.Embed(
+                color=discord.Color.dark_purple(),
+                description="{} Can't delete the warning of **{}** due to role heirarchy".format(self.emojis['cross'], member)
+            )
+            return await ctx.send(embed=embed)
+
+        if member == ctx.author:
+            embed = discord.Embed(
+                color=discord.Color.dark_purple(),
+                description="{} You can't delete your warning".format(self.emojis['cross'], member)
+            )
+            return await ctx.send(embed=embed)
+
+        try:
+            warn = int(num)
+        except ValueError:
+            embed = discord.Embed(
+                color=discord.Color.light_grey(),
+                description="{} Number must be a natural number and not any other value".format(self.emojis['cross'])
+            )
+            return await ctx.send(embed=embed)
+
+        warns = self.warn_collection.find_one({'user': member.id, 'guild': ctx.guild.id})
+
+        if not warns:
+            embed = discord.Embed(
+                color=discord.Color.light_grey(),
+                description="{} **{}** doesn't have any warnings".format(self.emojis['cross'])
+            )
+            return await ctx.send(f"**{member}** doesn't have any warnings..")
+
+        try:
+            warns['warnings'].pop(warn-1)
+        except IndexError:
+            embed = discord.Embed(
+                color=discord.Color.light_grey(),
+                description="{} **Invalid Warn ID provided**".format(self.emojis['cross'])
+            )
+            return await ctx.send(embed=embed)
+
+        if len(warns['warnings']) == 0:
+            self.warn_collection.delete_one({'user': member.id, 'guild': ctx.guild.id})
+        else:
+            self.warn_collection.update_one({'user': member.id, 'guild': ctx.guild.id}, {'$set': {'warnings': warns['warnings']}})
+
+        embed = discord.Embed(
+            color=discord.Color.light_grey(),
+            description='{} Successfully deleted Warning **#{}** of **{}**'.format(self.emojis['tick'], num, member)
+        )
+
+        await ctx.message.reply(embed=embed, mention_author=False)
+
 
 def setup(bot):
     bot.add_cog(Moderation(bot))

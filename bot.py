@@ -1,4 +1,4 @@
-import discord, os, json, pymongo
+import discord, os, json, pymongo, datetime
 
 from discord.ext import commands
 
@@ -11,25 +11,16 @@ class AxleyHelpCommand(commands.HelpCommand):
         return '%s' % (command.qualified_name)
 
     async def send_bot_help(self, mapping):
-        embed = discord.Embed(title="Help", color=discord.Color.blurple())
+        embed = discord.Embed(title="Help", color=0xd9e6d1, timestamp=datetime.datetime.utcnow())
         for cog, commands in mapping.items():
            filtered = await self.filter_commands(commands, sort=True)
            command_signatures = [self.get_something(c) for c in filtered]
            if command_signatures:
                 cog_name = getattr(cog, "qualified_name", "No Category")
                 embed.add_field(name=cog_name, value='`' + '` `'.join(a for a in command_signatures) + '`', inline=False)
-        '''
-        embed = discord.Embed(
-            color=discord.Color.blue()
-        )
-        embed.set_author(name='Help')
-        for cog in mapping:
-            embed.add_field(name=f'{cog.qualified_name}', value=f"`{[command.name for command in mapping[cog]]}`", inline=False)
 
-        #embed.add_field(name='Prompt `{}help <command>` for more information'.format(self.clean_prefix), value='**[Github](https://github.com/1olipop/Axley)** `|` **[Community](http://localhost:5000)**', inline=False)
-        
-        #'{cog.qualified_name}: {[command.name for command in mapping[cog]]}'
-        '''
+        embed.add_field(name='\0', value='[**Invite**](https://discord.com/api/oauth2/authorize?client_id=768380239255568414&permissions=8&scope=bot) **|** [**Community**](https://discord.gg/XJcThGs4Pu) **|** [**Github**](https://github.com/1olipop/Axley)')
+
         await self.get_destination().send(embed=embed)
 
     async def send_cog_help(self, cog):
@@ -40,7 +31,7 @@ class AxleyHelpCommand(commands.HelpCommand):
     
     async def send_command_help(self, command):
         embed = discord.Embed(
-            color=discord.Color.dark_green()
+            color=0xd9e6d1
         )
         embed.set_author(name='{}{}'.format(self.clean_prefix, command.name))
         embed.add_field(name="Usage", value='```yaml\n' + self.get_command_signature(command) + '```')

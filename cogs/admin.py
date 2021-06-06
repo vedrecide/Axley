@@ -201,6 +201,7 @@ class Admin(commands.Cog):
         name="rtfm",
         description="Gives you a documentation link for a discord.py entity.",
         aliases=["rtfd"],
+        hidden=True
     )
     async def rtfm(self, ctx, *, query: str = None):
         key = "latest"

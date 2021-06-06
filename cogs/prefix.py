@@ -13,8 +13,7 @@ class Prefix(commands.Cog):
     @commands.command(
         name='SetPrefix',
         aliases=[
-            'Changeprefix',
-            'Prefix'
+            'Changeprefix'
         ],
         description="Set's the custom prefix of the guild"
     )

@@ -1,3 +1,5 @@
+from logging import warn
+import warnings
 import discord, asyncio, datetime
 
 from discord.ext import commands
@@ -290,6 +292,15 @@ class Moderation(commands.Cog):
         )
         await ctx.send(embed=embed)
 
+    @warn.error
+    async def warn_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            embed = discord.Embed(
+                color=discord.Color.dark_orange(),
+                description="{} You are missing `Manage Messages` Permission(s) to run this command".format(self.emojis['cross'])
+            )
+            await ctx.send(embed=embed)
+
     @commands.command(name='Warnings', aliases=['Warns'], description="View the warnings of other members using this command")
     @commands.guild_only()
     @commands.has_permissions(manage_messages=True)
@@ -319,6 +330,15 @@ class Moderation(commands.Cog):
                 embed.add_field(name='#{} | {}'.format(i+1, time), value="🔖 **Reason:** {}\n🧑‍🦱 **Mod:** {}\n🔩 **Mod ID:** {}".format(reason, mod, mod_id))
 
             await ctx.send("📖 **{}** has `{}` warnings in total".format(member, number_of_warns), embed=embed)
+
+    @warnings.error
+    async def warnings_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            embed = discord.Embed(
+                color=discord.Color.dark_orange(),
+                description="{} You are missing `Manage Messages` Permission(s) to run this command".format(self.emojis['cross'])
+            )
+            await ctx.send(embed=embed)
 
     @commands.command(
         name='ClearWarn',
@@ -380,6 +400,16 @@ class Moderation(commands.Cog):
         )
 
         await ctx.message.reply(embed=embed, mention_author=False)
+
+
+    @delwarn.error
+    async def delwarn_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            embed = discord.Embed(
+                color=discord.Color.dark_orange(),
+                description="{} You are missing `Manage Messages` Permission(s) to run this command".format(self.emojis['cross'])
+            )
+            await ctx.send(embed=embed)
 
 
 def setup(bot):

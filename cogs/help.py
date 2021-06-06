@@ -2,24 +2,17 @@ import discord, datetime
 
 from discord.ext import commands
 
-class AxleyHelpCommand(commands.MinimalHelpCommand):
+class AxleyHelpCommand(commands.HelpCommand):
 
     def __init__(self):
-        super().__init__(
-            name='Help',
-            aliases=[
-                'He',
-                'Hel',
-                'H'
-            ],
-            description='Help Command of Axley :D'
-        )
+        super().__init__()
 
     def get_something(self, command):
         return '%s' % (command.qualified_name)
 
     async def send_bot_help(self, mapping):
         embed = discord.Embed(title="Help", color=0xd9e6d1, timestamp=datetime.datetime.utcnow())
+
         for cog, commands in mapping.items():
            filtered = await self.filter_commands(commands, sort=False)
            command_signatures = [self.get_something(c) for c in filtered]

@@ -206,12 +206,12 @@ class Admin(commands.Cog):
         await ctx.message.reply(embed=embed, mention_author=False)
 
     @commands.command(
-        name="rtfm",
+        name="Rtfm",
         description="Gives you a documentation link for a discord.py entity.",
-        aliases=["rtfd"],
+        aliases=["Rtfd"],
         hidden=True
     )
-    async def rtfm(self, ctx, *, query: str = None):
+    async def rtfm(self, ctx, *, query: str):
         key = "latest"
         await self.do_rtfm(ctx, key, query)
 

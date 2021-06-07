@@ -1,6 +1,7 @@
 import discord, datetime
 
 from discord.ext import commands
+from discord.ext.commands.core import command
 
 class AxleyHelpCommand(commands.HelpCommand):
 
@@ -8,14 +9,14 @@ class AxleyHelpCommand(commands.HelpCommand):
         super().__init__()
 
     def get_something(self, command):
-        return '%s' % (command.qualified_name)
+        return command.qualified_name
 
     async def send_bot_help(self, mapping):
         embed = discord.Embed(title="Help", color=0xd9e6d1, timestamp=datetime.datetime.utcnow())
 
         for cog, commands in mapping.items():
-           filtered = await self.filter_commands(commands, sort=False)
-           command_signatures = [self.get_something(c) for c in filtered]
+           #filtered = await self.filter_commands(commands, sort=False)
+           command_signatures = [self.get_something(c) for c in commands]
            if command_signatures:
                 cog_name = getattr(cog, "qualified_name", "No Category")
                 embed.add_field(name=cog_name, value='`' + '` `'.join(a for a in command_signatures) + '`', inline=False)

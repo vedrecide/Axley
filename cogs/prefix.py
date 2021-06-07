@@ -26,7 +26,7 @@ class Prefix(commands.Cog):
         if not data:
             embed = discord.Embed(
                 color=discord.Color.magenta(),
-                description='Are you sure you want to set the server prefix to `{}` ?'.format(pre)
+                description='Are you sure you want to set the server prefix to `{}` ?\nIf not, then you can leave this message as it is without reacting..'.format(pre)
             )
             message = await ctx.send(embed=embed)
             await message.add_reaction('✅')
@@ -45,7 +45,7 @@ class Prefix(commands.Cog):
                     color=discord.Color.magenta(),
                     description="{} Successfully changed the custom prefix of this server to `{}`".format(self.emojis['tick'], pre)
                 )
-                await ctx.send(embed=embed)
+                await ctx.message.reply(embed=embed)
         else:
             embed = discord.Embed(
                 color=discord.Color.magenta(),
@@ -70,13 +70,43 @@ class Prefix(commands.Cog):
                 await ctx.send(embed=embed)
 
     @prefix.error
-    async def prefix_error(self, ctx, error):
+    async def prefix_error(self, ctx: commands.Context, error):
         if isinstance(error, commands.MissingPermissions):
             embed = discord.Embed(
                 color=discord.Color.dark_orange(),
                 description="{} You are missing `Manage Messages` Permission(s) to run this command".format(self.emojis['cross'])
             )
             await ctx.send(embed=embed)
+
+    @commands.command(
+        name='DeletePrefix',
+        aliases=[
+            'Delprefix',
+            'Dp',
+            'Delpre'
+        ],
+        description="Delete's the custom prefix of the bot, leaving it to the default prefix which is `+`"
+    )
+    @commands.guild_only()
+    @commands.has_permissions(manage_messages=True)
+    async def delprefix(self, ctx: commands.Context):
+
+        data = self.collection.find_one({'_id': ctx.guild.id})
+
+        if not data:
+            embed = discord.Embed(
+                color=discord.Color.magenta(),
+                description="{} **{}** doesn't have any custom prefix".format(self.cross['cross'], ctx.guild)
+            )
+            await ctx.send(embed=embed)
+        else:
+            self.collection.delete_one({'_id': ctx.guild.id})
+            embed = discord.Embed(
+                color=discord.Color.magenta(),
+                description="{} **{}'s** custom prefix has been deleted".format(self.cross['tick'], ctx.guild)
+            )
+            await ctx.send(embed=embed)
+
 
     @commands.command(
         name='ViewPrefix',

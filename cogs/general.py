@@ -1,6 +1,7 @@
-import discord
+import discord, json
 
 from discord.ext import commands
+from .utils.paginator import clean_code
 
 class General(commands.Cog):
 
@@ -25,6 +26,66 @@ class General(commands.Cog):
         embed.add_field(name='URL', value='[Click]({})'.format(member.avatar_url))
 
         await ctx.send(embed=embed)
+
+    @commands.command(
+        name='Userinfo',
+        aliases=[
+            'MemberInfo',
+            'Whois'
+        ],
+        description="Send's the mentioned user information"
+    )
+    @commands.guild_only()
+    async def userinfo(self, ctx, member: discord.Member = None):
+        if member == None:
+            member = ctx.author
+
+        roles = [role for role in member.roles[1:]]
+
+        if len(roles) == 0:
+          role = "Member has no role in the server"
+        elif len(roles)>1024 :
+          role = f'Displaying Top 15 roles : {roles[:15]}'
+        else :
+          roles.reverse()
+          role = ' , '.join([role.mention for role in roles])
+            
+        embed = discord.Embed(color=member.color, timestamp=ctx.message.created_at)
+        embed.set_author(name=f"User Info - {member}", icon_url="{}".format(member.avatar_url))
+        embed.set_thumbnail(url = member.avatar_url)
+        embed.set_footer(text=f"Requested by {ctx.author}", icon_url = ctx.author.avatar_url)
+
+        embed.add_field(name="Full name:", value=member, inline=False)
+        embed.add_field(name="Guild name:", value=member.display_name, inline=False)
+        embed.add_field(name="ID:", value=member.id, inline=False)
+        embed.add_field(name="Created at:", value=member.created_at.strftime("%a, %d %B %Y, %I:%M %p UTC "), inline=False)
+        embed.add_field(name="Joined at:", value=member.joined_at.strftime("%a, %d %B %Y, %I:%M %p UTC "), inline=False)
+        embed.add_field(name=f"Roles ({len(roles)})", value = " ".join([role.mention for role in roles]), inline=False)
+        embed.add_field(name="Top role:", value=member.top_role.mention, inline=False)
+
+        await ctx.message.reply(embed=embed, mention_author=False)
+
+    @commands.command(
+        name='EmbedBuilder',
+        aliases=[
+            'Embed'
+        ],
+        description='Embed Builder using JSON'
+    )
+    async def embed(self , ctx, *, data):
+        try:
+            try:
+                data = clean_code(data)
+                data = res = json.loads(data)
+  
+                if isinstance(data, dict):
+                    embed = discord.Embed.from_dict(data)
+                    await ctx.send(embed=embed)
+            except Exception as exc:
+                await ctx.send(exc)
+        except:
+            embed = discord.Embed(color=0x2f3136 , description = data)
+            await ctx.send(embed=embed)
     
 
 def setup(bot):

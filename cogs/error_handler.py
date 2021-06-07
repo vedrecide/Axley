@@ -2,6 +2,7 @@ import discord
 
 from discord.ext import commands
 from discord.ext.commands import bot
+from discord.ext.commands.errors import MissingRequiredArgument
 
 class ErrorHandler(commands.Cog):
     '''
@@ -29,6 +30,28 @@ class ErrorHandler(commands.Cog):
                 description='{} **Owner only command >:(**'.format(self.emojis['cross'])
             )
 
+            await ctx.send(embed=embed)
+
+        elif isinstance(error, commands.BadArgument):
+            embed = discord.Embed(
+                color=discord.Color.dark_red(),
+                description='{} **Invalid Arguments Provided!**'.format(self.emojis['cross'])
+            )
+            embed.add_field(
+                name='Correct Way',
+                value='```yaml\n{}{} {}```'.format(ctx.prefix, ctx.command, ctx.command.signature)
+            )
+            await ctx.send(embed=embed)
+
+        elif isinstance(error, MissingRequiredArgument):
+            embed = discord.Embed(
+                color=discord.Color.dark_red(),
+                description='{} **Invalid Arguments Provided!**'.format(self.emojis['cross'])
+            )
+            embed.add_field(
+                name='Correct Way',
+                value='```yaml\n{}{} {}```'.format(ctx.prefix, ctx.command, ctx.command.signature)
+            )
             await ctx.send(embed=embed)
 
         else:

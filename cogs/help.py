@@ -6,7 +6,11 @@ from discord.ext.commands.core import command
 class AxleyHelpCommand(commands.HelpCommand):
 
     def __init__(self):
-        super().__init__()
+        super().__init__(
+            command_attrs={
+                'verify_checks': False
+            }
+        )
 
     def get_something(self, command):
         return command.qualified_name
@@ -15,7 +19,6 @@ class AxleyHelpCommand(commands.HelpCommand):
         embed = discord.Embed(title="Help", color=0xd9e6d1, timestamp=datetime.datetime.utcnow())
 
         for cog, commands in mapping.items():
-           #filtered = await self.filter_commands(commands, sort=False)
            command_signatures = [self.get_something(c) for c in commands]
            if command_signatures:
                 cog_name = getattr(cog, "qualified_name", "No Category")

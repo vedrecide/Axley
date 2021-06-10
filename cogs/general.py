@@ -86,6 +86,38 @@ class General(commands.Cog):
         except:
             embed = discord.Embed(color=0x2f3136 , description = data)
             await ctx.send(embed=embed)
+
+    @commands.command(
+        name='ServerInfo',
+        aliases=[
+            'Si',
+            'GuildInfo',
+            'Gi'
+        ],
+        description="Show's the respective guild's server info"
+    )
+    @commands.guild_only()
+    async def serverinfo(self, ctx):
+        embed = discord.Embed(color=0xd9e6d1, timestamp=ctx.message.created_at)
+
+        embed.set_author(icon_url=f"{ctx.guild.icon_url}" ,name=f"Guild Info - {ctx.guild.name}")
+        embed.set_thumbnail(url=f"{ctx.guild.icon_url}")
+        embed.add_field(name="Owner", value=ctx.guild.owner)
+        embed.add_field(name="Guild ID", value=str(ctx.guild.id))
+        embed.add_field(name="Verification Level", value=str(ctx.guild.verification_level).title())
+        embed.add_field(name="Total Count", value=ctx.guild.member_count)
+        embed.add_field(name="Roles", value=f"`{len(ctx.guild.roles)}` roles in total")
+        embed.add_field(name="Guild Region", value=str(ctx.guild.region).title())
+        embed.add_field(name="Created at", value=ctx.guild.created_at.__format__('%A, %d. %B %Y %H:%M:%S'))
+        embed.add_field(name="Channels", value="`{}` in total\n`{}` voice channels\n`{}` text channels".format(
+            len(ctx.guild.channels),
+            len(ctx.guild.voice_channels),
+            len(ctx.guild.text_channels)
+            )
+        )
+        embed.add_field(name="Categories", value="`{}` in total".format(len(ctx.guild.categories)))
+        embed.add_field(name="Features", value="`" + "` `".join(a for a in ctx.guild.features) + '` ', inline=False)
+        await ctx.send(embed=embed)
     
 
 def setup(bot):

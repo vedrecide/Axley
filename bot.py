@@ -1,6 +1,7 @@
-import discord, os, json, pymongo
+import discord, os, json
 
 from discord.ext import commands
+from motor.motor_asyncio import AsyncIOMotorClient
 from cogs.help import AxleyHelpCommand
 
 class Axley(commands.AutoShardedBot):
@@ -32,16 +33,16 @@ class Axley(commands.AutoShardedBot):
             config = json.load(file)
             mongo_url = config['mongo_url']
 
-        cluster = pymongo.MongoClient(mongo_url)
+        cluster = AsyncIOMotorClient(mongo_url)
         db = cluster['database']
 
         return db
 
-    def prefix(self, bot, msg):
+    async def prefix(self, bot, msg):
         db = self.db()
         collection = db['prefix']
 
-        data = collection.find_one({'_id': msg.guild.id})
+        data = await collection.find_one({'_id': msg.guild.id})
 
         if not data:
             prefix = '+'

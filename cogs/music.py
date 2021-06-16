@@ -355,6 +355,11 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
         await player.set_pause(True)
         await ctx.send("Playback paused.")
 
+    @pause.error
+    async def pause_command_error(self, ctx, exc):
+        if isinstance(exc, PlayerIsAlreadyPaused):
+            await ctx.send("Already paused.")
+
     @commands.command(name="resume")
     @commands.guild_only()
     async def resume(self, ctx):
@@ -364,12 +369,12 @@ class Music(commands.Cog, wavelink.WavelinkMixin):
             raise PlayerAlreadyPlaying
 
         await player.set_pause(False)
-        await ctx.send("Playback resumed")
+        await ctx.send("Playback resumed.")
 
-    @pause.error
-    async def pause_command_error(self, ctx, exc):
-        if isinstance(exc, PlayerIsAlreadyPaused):
-            await ctx.send("Already paused.")
+    @resume.error
+    async def resume_command_error(self, ctx, error):
+        if isinstance(error, PlayerAlreadyPlaying):
+            await ctx.send("Already resumed.")
 
     @commands.command(
         name="Stop",

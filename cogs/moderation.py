@@ -250,7 +250,7 @@ class Moderation(commands.Cog):
     @commands.command(name='Warn', aliases=['Punish', 'W'], description='Adds a warning to the member')
     @commands.guild_only()
     @commands.has_permissions(manage_messages=True)
-    async def warn(self, ctx: commands.Context, member: discord.Member, *, reason="No reason provided"):
+    async def warn(self, ctx: commands.Context, member: discord.Member, *, reason = "No reason provided"):
         if ctx.author.top_role.position < member.top_role.position:
             embed = discord.Embed(
                 color=discord.Color.dark_purple(),
@@ -265,30 +265,44 @@ class Moderation(commands.Cog):
             )
             return await ctx.send(embed=embed)
 
-        user_id = {"user": member.id}
+        user_id = {"user": member.id, "guild": ctx.guild.id}
 
-        if self.warn_collection.count_documents({}) == 0:
-            self.warn_collection.insert_one({"user": member.id, "guild": ctx.guild.id, "warnings": []})
+        warns = await self.warn_collection.find_one(user_id)
 
-        elif self.warn_collection.count_documents(user_id) == 0:
-            self.warn_collection.insert_one({"user": member.id, "guild": ctx.guild.id, "warnings": []})
+        if not warns:
+            await self.warn_collection.insert_one({"user": member.id, "guild": ctx.guild.id, "warnings": []})
+            warns = await self.warn_collection.find_one(user_id)
+            warns['warnings'].append({
+                'warned_at': datetime.datetime.utcnow().strftime('%d/%m/%Y - %I:%M %p'),
+                'responsible_moderator': f'{ctx.author}',
+                'moderator_id': f'{ctx.author.id}',
+                'reason': str(reason)
+            })
 
-        warns = self.warn_collection.find_one(user_id)
+            await self.warn_collection.update_one({"user": member.id, "guild": ctx.guild.id}, {"$set": {"warnings": warns["warnings"]}})
 
-        warns['warnings'].append({
-            'warned_at': datetime.datetime.utcnow().strftime('%d/%m/%Y - %I:%M %p'),
-            'responsible_moderator': f'{ctx.author}',
-            'moderator_id': f'{ctx.author.id}',
-            'reason': str(reason)
-        })
+            embed = discord.Embed(
+                color=discord.Color.light_grey(),
+                description="{} **{}** has been warned `|` **Reason:** {}".format(self.emojis['tick'], member, reason)
+            )
+            await ctx.send(embed=embed)
 
-        self.warn_collection.update_one({"user": member.id, "guild": ctx.guild.id}, {"$set": {"warnings": warns["warnings"]}})
+        else:
 
-        embed = discord.Embed(
-            color=discord.Color.light_grey(),
-            description="{} **{}** has been warned `|` **Reason:** {}".format(self.emojis['tick'], member, reason)
-        )
-        await ctx.send(embed=embed)
+            warns['warnings'].append({
+                'warned_at': datetime.datetime.utcnow().strftime('%d/%m/%Y - %I:%M %p'),
+                'responsible_moderator': f'{ctx.author}',
+                'moderator_id': f'{ctx.author.id}',
+                'reason': str(reason)
+            })
+
+            await self.warn_collection.update_one({"user": member.id, "guild": ctx.guild.id}, {"$set": {"warnings": warns["warnings"]}})
+
+            embed = discord.Embed(
+                color=discord.Color.light_grey(),
+                description="{} **{}** has been warned `|` **Reason:** {}".format(self.emojis['tick'], member, reason)
+            )
+            await ctx.send(embed=embed)
 
     @warn.error
     async def warn_error(self, ctx, error):
@@ -304,7 +318,7 @@ class Moderation(commands.Cog):
     @commands.has_permissions(manage_messages=True)
     async def warnings(self, ctx: commands.Context, member: discord.Member):
 
-        warns = self.warn_collection.find_one({'user': member.id, 'guild': ctx.guild.id})
+        warns = await self.warn_collection.find_one({'user': member.id, 'guild': ctx.guild.id})
 
         if not warns:
             embed = discord.Embed(
@@ -369,7 +383,7 @@ class Moderation(commands.Cog):
             )
             return await ctx.send(embed=embed)
 
-        warns = self.warn_collection.find_one({'user': member.id, 'guild': ctx.guild.id})
+        warns = await self.warn_collection.find_one({'user': member.id, 'guild': ctx.guild.id})
 
         if not warns:
             embed = discord.Embed(
@@ -388,9 +402,9 @@ class Moderation(commands.Cog):
             return await ctx.send(embed=embed)
 
         if len(warns['warnings']) == 0:
-            self.warn_collection.delete_one({'user': member.id, 'guild': ctx.guild.id})
+            await self.warn_collection.delete_one({'user': member.id, 'guild': ctx.guild.id})
         else:
-            self.warn_collection.update_one({'user': member.id, 'guild': ctx.guild.id}, {'$set': {'warnings': warns['warnings']}})
+            await self.warn_collection.update_one({'user': member.id, 'guild': ctx.guild.id}, {'$set': {'warnings': warns['warnings']}})
 
         embed = discord.Embed(
             color=discord.Color.light_grey(),

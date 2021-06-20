@@ -1,4 +1,4 @@
-import discord, os, json, dotenv
+import discord, os, dotenv
 
 from discord.ext import commands
 from motor.motor_asyncio import AsyncIOMotorClient

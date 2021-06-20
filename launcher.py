@@ -1,4 +1,3 @@
-import json
 from core.bot import Axley
 
 def run():

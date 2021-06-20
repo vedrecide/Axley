@@ -135,3 +135,5 @@ config/config.json
 .py
 Lavalink.jar
 logs
+Dockerfile
+docker-compose.yml

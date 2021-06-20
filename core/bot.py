@@ -1,8 +1,10 @@
-import discord, os, json
+import discord, os, json, dotenv
 
 from discord.ext import commands
 from motor.motor_asyncio import AsyncIOMotorClient
 from cogs.help import AxleyHelpCommand
+
+dotenv.load_dotenv()
 
 class Axley(commands.AutoShardedBot):
 
@@ -21,22 +23,28 @@ class Axley(commands.AutoShardedBot):
             help_command=AxleyHelpCommand()
         )
 
+
+    def load_cogs(self):
         for file in self.bot_cogs:
             if file.endswith('.py'):
                 try:
                     self.load_extension(f'cogs.{file[:-3]}')
+                    print("  Loaded '{}' cog".format(file[:-3]))
                 except Exception as exc:
                     raise exc
 
-    def db(self):
-        with open('./config/config.json', 'r') as file:
-            config = json.load(file)
-            mongo_url = config['mongo_url']
 
-        cluster = AsyncIOMotorClient(mongo_url)
+    def db(self):
+        cluster = AsyncIOMotorClient(os.getenv("MONGO_URL"))
         db = cluster['database']
 
         return db
+
+    def run(self):
+        self.load_cogs()
+
+        super().run(os.getenv("TOKEN"), reconnect=True)
+        print(' Logged in as {}'.format(self.user))
 
     async def prefix(self, bot, msg):
         db = self.db()

@@ -1,4 +1,4 @@
-import discord, random
+import discord, random, aiohttp
 
 from discord.ext import commands
 
@@ -37,9 +37,20 @@ class Fun(commands.Cog):
         ]
 
         if not text:
-            await ctx.message.reply('{} **{}** has paid their respect'.format(random.choice(emojis), ctx.author))
+            await ctx.message.reply('{} **{}** has paid their respect'.format(random.choice(emojis), ctx.author), mention_author = False)
         else:
-            await ctx.message.reply('{} **{}** has paid their respect for **{}**'.format(random.choice(emojis), ctx.author, text))
+            await ctx.message.reply('{} **{}** has paid their respect for **{}**'.format(random.choice(emojis), ctx.author, text), mention_author = False)
+
+    @commands.command(aliases = ["meemee", "memes"])
+    async def meme(self, ctx):
+        embed = discord.Embed(color=discord.Color.dark_blue())
+        embed.set_footer(text='Requested by {}'.format(ctx.author), icon_url='{}'.format(ctx.author.avatar_url))
+
+        async with aiohttp.ClientSession() as cs:
+            async with cs.get('https://www.reddit.com/r/dankmemes/new.json?sort=hot') as r:
+                res = await r.json()
+                embed.set_image(url=res['data']['children'] [random.randint(0, 25)]['data']['url'])
+                await ctx.send(embed=embed)
 
 
 def setup(bot):

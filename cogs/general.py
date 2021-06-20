@@ -23,7 +23,7 @@ class General(commands.Cog):
         )
         embed.set_author(name='Avatar - {}'.format(member))
         embed.set_image(url='{}'.format(member.avatar_url))
-        embed.add_field(name='URL', value='[Click]({})'.format(member.avatar_url))
+        embed.add_field(name='Original URL', value='[Click]({})'.format(member.avatar_url))
 
         await ctx.send(embed=embed)
 

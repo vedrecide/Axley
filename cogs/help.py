@@ -29,6 +29,7 @@ class AxleyHelpCommand(commands.HelpCommand):
         await self.get_destination().send(embed=embed)
 
     async def send_cog_help(self, cog):
+
         embed = discord.Embed(
             color=0xd9e6d1,
             title='Help',

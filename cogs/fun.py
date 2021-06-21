@@ -41,8 +41,13 @@ class Fun(commands.Cog):
         else:
             await ctx.message.reply('{} **{}** has paid their respect for **{}**'.format(random.choice(emojis), ctx.author, text), mention_author = False)
 
-    @commands.command(aliases = ["meemee", "memes"])
-    async def meme(self, ctx):
+    @commands.command(
+        name="Meme",
+        aliases = ["meemee", "memes"],
+        description="Send's a random meme from reddit :3"
+    )
+    @commands.guild_only()
+    async def meme(self, ctx: commands.Context):
         embed = discord.Embed(color=discord.Color.dark_blue())
         embed.set_footer(text='Requested by {}'.format(ctx.author), icon_url='{}'.format(ctx.author.avatar_url))
 
@@ -51,6 +56,54 @@ class Fun(commands.Cog):
                 res = await r.json()
                 embed.set_image(url=res['data']['children'] [random.randint(0, 25)]['data']['url'])
                 await ctx.send(embed=embed)
+
+    @commands.command(
+        name="Eighball",
+        aliases=[
+            '8ball',
+            'Eb',
+            '8b'
+        ],
+        description="Send's an 8ball answer to your random question"
+    )
+    @commands.guild_only()
+    async def eightball(self, ctx: commands.Context, *, question: str):
+        res = [
+            "It is Certain.",
+            "It is decidedly so.",
+            "Without a doubt.",
+            "Yes definitely.",
+            "You may rely on it.",
+            "As I see it, yes.",
+            "Most likely.",
+            "Outlook good.",
+            "Yes.",
+            "Signs point to yes.",
+            "Reply hazy, try again.",
+            "Ask again later.",
+            "Better not tell you now.",
+            "Cannot predict now.",
+            "Concentrate and ask again.",
+            "Don't count on it.",
+            "My reply is no.",
+            "My sources say no.",
+            "Outlook not so good.",
+            "Very doubtful."
+        ]
+
+        answer = random.choice(res)
+
+        embed = discord.Embed(
+            color=discord.Color.dark_purple(),
+            description="**Question:** {}\n**Answer:** {}".format(question, answer),
+            timestamp=ctx.message.created_at
+        )
+        embed.set_author(
+            name="8ball - {}".format(ctx.author),
+            icon_url='{}'.format(ctx.author.avatar_url)
+        )
+
+        await ctx.message.reply(embed=embed, mention_author=False)
 
 
 def setup(bot):

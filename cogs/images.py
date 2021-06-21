@@ -31,9 +31,9 @@ class Images(commands.Cog):
 
         walker.paste(pfp, (175, 60))
 
-        walker.save("profile.jpg")
+        walker.save("./images/profile.jpg")
 
-        await ctx.send(file=discord.File("profile.jpg"))
+        await ctx.send(file=discord.File("./images/profile.jpg"))
 
 def setup(bot):
     bot.add_cog(Images(bot))

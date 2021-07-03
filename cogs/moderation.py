@@ -1,7 +1,7 @@
 import discord, asyncio, datetime
 
 from discord.ext import commands
-from .utils.converters import TimeConverter
+from utils.converters import TimeConverter
 
 class Moderation(commands.Cog):
 

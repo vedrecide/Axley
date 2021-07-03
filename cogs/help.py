@@ -3,7 +3,7 @@ import discord, datetime
 from discord.ext import commands
 from discord.ext.commands.core import command
 
-class AxleyHelpCommand(commands.HelpCommand):
+class AxleyHelpCommand(commands.MinimalHelpCommand):
 
     def __init__(self):
         super().__init__(
@@ -44,9 +44,6 @@ class AxleyHelpCommand(commands.HelpCommand):
             value='`' + '` `'.join(a.name for a in cog.get_commands()) + '`'
         )
         await self.get_destination().send(embed=embed)
-
-    async def send_group_help(self, group):
-        return await super().send_group_help(group)
     
     async def send_command_help(self, command):
         embed = discord.Embed(

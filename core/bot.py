@@ -1,3 +1,4 @@
+import logging
 import discord, os, dotenv
 
 from discord.ext import commands
@@ -44,7 +45,6 @@ class Axley(commands.AutoShardedBot):
         self.load_cogs()
 
         super().run(os.getenv("TOKEN"), reconnect=True)
-        print(' Logged in as {}'.format(self.user))
 
     async def prefix(self, bot, msg):
         db = self.db()
@@ -60,5 +60,5 @@ class Axley(commands.AutoShardedBot):
         return commands.when_mentioned_or(prefix)(bot, msg)
 
     async def on_ready(self):
-        await self.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'+help'))
-        print('[*] Ready')
+        await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f'+help in {len(self.guilds)} guilds'))
+        print('Logged in as {}'.format(self.user))

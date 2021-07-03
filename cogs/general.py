@@ -1,7 +1,7 @@
 import discord, json
 
 from discord.ext import commands
-from .utils.paginator import clean_code
+from utils.paginator import clean_code
 
 class General(commands.Cog):
 

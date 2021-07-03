@@ -1,8 +1,8 @@
 import discord, textwrap, io, contextlib, re, zlib, aiohttp, os
 
 from discord.ext import commands
-from .utils.paginator import clean_code
-from .utils.paginator import Pag
+from utils.paginator import clean_code
+from utils.paginator import Pag
 from traceback import format_exception
 
 '''

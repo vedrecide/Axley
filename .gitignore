@@ -127,13 +127,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-
-# Config File
-config/config.json
-
-# File where I test some stuff locally and the lavalink jar
-.py
-Lavalink.jar
-logs
-Dockerfile
-docker-compose.yml

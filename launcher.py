@@ -1,8 +1,6 @@
 from core.bot import Axley
 
-def run():
-    bot = Axley()
-    bot.run()
+bot = Axley()
 
 if __name__ == '__main__':
-    run()
+    bot.run()

@@ -1,12 +1,14 @@
-import discord, random, aiohttp
+import discord, random, asyncio, http
 
 from discord.ext import commands
+from aiohttp import ClientSession
 
 class Fun(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
         self.emojis = self.bot.cool_emojis
+        self.session = ClientSession()
 
     @commands.command(
         name='Reverse',
@@ -20,6 +22,8 @@ class Fun(commands.Cog):
             color=discord.Color.dark_blue(),
             description="🔁  {}".format(a)
         )
+        await ctx.trigger_typing()
+        await asyncio.sleep(1)
         await ctx.message.reply(embed=embed, mention_author=False)
 
     @commands.command(
@@ -51,11 +55,10 @@ class Fun(commands.Cog):
         embed = discord.Embed(color=discord.Color.dark_blue())
         embed.set_footer(text='Requested by {}'.format(ctx.author), icon_url='{}'.format(ctx.author.avatar_url))
 
-        async with aiohttp.ClientSession() as cs:
-            async with cs.get('https://www.reddit.com/r/dankmemes/new.json?sort=hot') as r:
-                res = await r.json()
-                embed.set_image(url=res['data']['children'] [random.randint(0, 25)]['data']['url'])
-                await ctx.send(embed=embed)
+        async with self.session.get('https://www.reddit.com/r/dankmemes/new.json?sort=hot') as r:
+            res = await r.json()
+            embed.set_image(url=res['data']['children'] [random.randint(0, 25)]['data']['url'])
+            await ctx.send(embed=embed)
 
     @commands.command(
         name="Eighball",

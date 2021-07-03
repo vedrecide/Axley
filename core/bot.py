@@ -1,4 +1,3 @@
-import logging
 import discord, os, dotenv
 
 from discord.ext import commands

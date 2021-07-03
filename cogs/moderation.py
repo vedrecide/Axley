@@ -1,7 +1,7 @@
 import discord, asyncio, datetime
 
 from discord.ext import commands
-from utils.converters import TimeConverter
+from utils.converters import (TimeConverter, MemberID)
 
 class Moderation(commands.Cog):
 
@@ -11,6 +11,7 @@ class Moderation(commands.Cog):
         self.multiplier = {'s': 1, 'm': 60, 'h': 3600, 'd': 86400, 'w': 604800}
         db = self.bot.db()
         self.warn_collection = db['warnings']
+        self.muterole_collection = db['muteroles']
 
     @commands.command(name='Purge', description='Purges a given amount of messages mentioned, also works with mentioning members at the end')
     @commands.guild_only()
@@ -180,32 +181,14 @@ class Moderation(commands.Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(ban_members=True)
     @commands.has_permissions(ban_members=True)
-    async def unban(self, ctx: commands.Context, member: int):
-        # Not the best Unban command but meh..
-        try:
-            #try:
-                await ctx.guild.unban(discord.Object(member))
+    async def unban(self, ctx: commands.Context, member: MemberID):
+        await ctx.guild.unban(discord.Object(member))
 
-                embed = discord.Embed(
-                    color=discord.Color.blue(),
-                    description="{} **{}** has been unbanned".format(self.emojis['tick'], member)
-                )
-                await ctx.send(embed=embed)
-            #except Exception as exc:
-                #embed = discord.Embed(
-                    #color=discord.Color.blue(),
-                    #description="{} **{}** isn't banned and isn't in the guild ban list\nOr there is an exception that has occured, Reported to the Support server!".format(self.emojis['cross'], member)
-                #)
-
-                #await ctx.send(embed=embed)
-
-        except ValueError:
-            embed = discord.Embed(
-                color=discord.Color.blue(),
-                description="{} Unban command includes only the `ID` of the User\n[Learn More Here!]".format(self.emojis['cross'])
-            )
-
-            await ctx.send(embed=embed)
+        embed = discord.Embed(
+            color=discord.Color.blue(),
+            description="{} **{}** has been unbanned".format(self.emojis['tick'], member)
+        )
+        await ctx.send(embed=embed)
 
     @unban.error
     async def unban_error(self, ctx, error):

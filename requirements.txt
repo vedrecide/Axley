@@ -4,7 +4,6 @@ attrs==21.2.0
 buttons==0.1.9
 chardet==4.0.0
 discord==1.7.3
-discord-ext-menus @ git+https://github.com/Rapptz/discord-ext-menus@309c70222eec33acacb8c21bbb0fbe9bc57de661
 discord.py==1.7.3
 dnspython==2.1.0
 idna==3.2

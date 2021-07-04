@@ -4,13 +4,4 @@ services:
     bot:
         container_name: axley_bot
         build: .
-        links:
-            - mongodb
         env_file: .env
-    mongodb:
-        container_name: axley_mongodb
-        image: mongo
-        volumes:
-            - ./db:/data/db
-        ports:
-            - "27017:27017"

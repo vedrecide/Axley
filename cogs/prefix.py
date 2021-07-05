@@ -148,7 +148,8 @@ class Prefix(commands.Cog):
                 description="""
                 {} **{}'s** custom prefix has been deleted
                 """.format(
-                self.cross["tick"], ctx.guild
+                    self.cross["tick"],
+                    ctx.guild
                 ),
             )
             await ctx.send(embed=embed)

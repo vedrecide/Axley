@@ -19,7 +19,7 @@ class General(commands.Cog):
     )
     @commands.guild_only()
     async def avatar(self, ctx: commands.Context, member: discord.Member = None):
-        if member == None:
+        if member is None:
             member = ctx.author
 
         embed = discord.Embed(color=0xD9E6D1)
@@ -38,18 +38,18 @@ class General(commands.Cog):
     )
     @commands.guild_only()
     async def userinfo(self, ctx, member: discord.Member = None):
-        if member == None:
+        if member is None:
             member = ctx.author
 
         roles = [role for role in member.roles[1:]]
 
         if len(roles) == 0:
-            role = "Member has no role in the server"
+            roles = "Member has no role in the server"
         elif len(roles) > 1024:
-            role = f"Displaying Top 15 roles : {roles[:15]}"
+            roles = f"Displaying Top 15 roles : {roles[:15]}"
         else:
             roles.reverse()
-            role = " , ".join([role.mention for role in roles])
+            roles = " , ".join([role.mention for role in roles])
 
         embed = discord.Embed(color=member.color, timestamp=ctx.message.created_at)
         embed.set_author(
@@ -87,15 +87,16 @@ class General(commands.Cog):
     )
     async def embed(self, ctx, *, data):
         try:
-                data = clean_code(data)
-                data = res = json.loads(data)
+            data = clean_code(data)
+            data = json.loads(data)
 
-                if isinstance(data, dict):
-                    embed = discord.Embed.from_dict(data)
-                    await ctx.send(embed=embed)
+            if isinstance(data, dict):
+                embed = discord.Embed.from_dict(data)
+                await ctx.send(embed=embed)
         except Exception as exc:
             embed = discord.Embed(color=0x2F3136, description=data)
             await ctx.send(embed=embed)
+            raise exc
 
     @commands.command(
         name="ServerInfo",

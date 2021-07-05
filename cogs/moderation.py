@@ -85,7 +85,9 @@ class Moderation(commands.Cog):
         if isinstance(error, commands.MissingPermissions):
             embed = discord.Embed(
                 color=discord.Color.dark_orange(),
-                description="{} You are missing `Manage Messages` Permission(s) to run this command".format(
+                description="""
+                {} You are missing `Manage Messages` Permission(s) to run this command
+                """.format(
                     self.emojis['cross'])
             )
             await ctx.send(embed=embed)
@@ -106,7 +108,10 @@ class Moderation(commands.Cog):
         embed = discord.Embed(
             color=discord.Color.dark_purple(),
             description="{} **{}** has been kicked `|` **Reason:** {}".format(
-                self.emojis['tick'], member, reason)
+                self.emojis['tick'],
+                member,
+                reason
+            )
         )
         await ctx.send(embed=embed)
         await member.kick(reason=reason)
@@ -116,8 +121,11 @@ class Moderation(commands.Cog):
         if isinstance(error, commands.MissingPermissions):
             embed = discord.Embed(
                 color=discord.Color.dark_orange(),
-                description="{} You are missing `Kick Members` Permission(s) to run this command".format(
-                    self.emojis['cross'])
+                description="""
+                {} You are missing `Kick Members` Permission(s) to run this command
+                """.format(
+                    self.emojis['cross']
+                )
             )
             await ctx.send(embed=embed)
 
@@ -382,8 +390,12 @@ class Moderation(commands.Cog):
         if ctx.author.top_role.position < member.top_role.position:
             embed = discord.Embed(
                 color=discord.Color.dark_purple(),
-                description="{} Can't delete the warning of **{}** due to role heirarchy".format(
-                    self.emojis['cross'], member)
+                description="""
+                {} Can't delete the warning of **{}** due to role heirarchy
+                """.format(
+                    self.emojis['cross'],
+                    member
+                )
             )
             return await ctx.send(embed=embed)
 
@@ -400,8 +412,11 @@ class Moderation(commands.Cog):
         except ValueError:
             embed = discord.Embed(
                 color=discord.Color.light_grey(),
-                description="{} Number must be a natural number and not any other value".format(
-                    self.emojis['cross'])
+                description="""
+                {} Number must be a natural number and not any other value
+                """.format(
+                    self.emojis['cross']
+                )
             )
             return await ctx.send(embed=embed)
 
@@ -426,9 +441,24 @@ class Moderation(commands.Cog):
             return await ctx.send(embed=embed)
 
         if len(warns['warnings']) == 0:
-            await self.warn_collection.delete_one({'user': member.id, 'guild': ctx.guild.id})
+            await self.warn_collection.delete_one(
+                {
+                    'user': member.id,
+                    'guild': ctx.guild.id
+                }
+            )
         else:
-            await self.warn_collection.update_one({'user': member.id, 'guild': ctx.guild.id}, {'$set': {'warnings': warns['warnings']}})
+            await self.warn_collection.update_one(
+                {
+                    'user': member.id,
+                    'guild': ctx.guild.id
+                },
+                {
+                    '$set': {
+                        'warnings': warns['warnings']
+                    }
+                }
+            )
 
         embed = discord.Embed(
             color=discord.Color.light_grey(),
@@ -443,7 +473,9 @@ class Moderation(commands.Cog):
         if isinstance(error, commands.MissingPermissions):
             embed = discord.Embed(
                 color=discord.Color.dark_orange(),
-                description="{} You are missing `Manage Messages` Permission(s) to run this command".format(
+                description="""
+                {} You are missing `Manage Messages` Permission(s) to run this command
+                """.format(
                     self.emojis['cross'])
             )
             await ctx.send(embed=embed)
@@ -473,13 +505,25 @@ class Moderation(commands.Cog):
     )
     @commands.guild_only()
     async def set(self, ctx: commands.Context, role: discord.Role):
-        data = await self.muterole_collection.find_one({'_id': ctx.guild.id})
+        data = await self.muterole_collection.find_one(
+            {'_id': ctx.guild.id}
+        )
 
         if not data:
-            await self.muterole_collection.insert_one({'_id': ctx.guild.id, 'muterole': role.id})
+            await self.muterole_collection.insert_one(
+                {'_id': ctx.guild.id, 'muterole': role.id}
+            )
 
         else:
-            await self.muterole_collection.update_one({'_id': ctx.guild.id}, {'$set': {'muterole': role.id}})
+            await self.muterole_collection.update_one(
+                {
+                    '_id': ctx.guild.id
+                },
+                {'$set': {
+                        'muterole': role.id
+                    }
+                }
+            )
 
 
 def setup(bot):

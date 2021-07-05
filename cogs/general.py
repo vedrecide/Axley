@@ -13,7 +13,10 @@ class General(commands.Cog):
     @commands.command(
         name='Avatar',
         aliases=['Av'],
-        description='Sends the avatar / profile picture of the member mentioned, if not mentioned, it will send your avatar'
+        description="""
+        Sends the avatar / profile picture of the member mentioned, if not mentioned,
+        it will send your avatar..
+        """
     )
     @commands.guild_only()
     async def avatar(self, ctx: commands.Context, member: discord.Member = None):

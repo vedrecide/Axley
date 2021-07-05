@@ -20,8 +20,8 @@ class AxleyHelpCommand(commands.MinimalHelpCommand):
             title="Help", color=0xD9E6D1, timestamp=datetime.datetime.utcnow()
         )
 
-        for cog, commands in mapping.items():
-            command_signatures = [self.get_something(c) for c in commands]
+        for cog, command in mapping.items():
+            command_signatures = [self.get_something(c) for c in command]
             if command_signatures:
                 cog_name = getattr(cog, "qualified_name", "No Category")
                 embed.add_field(

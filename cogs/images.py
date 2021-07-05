@@ -14,7 +14,7 @@ class Images(commands.Cog):
     )
     @commands.guild_only()
     async def walker(self, ctx: commands.Context, user: discord.Member = None):
-        if user == None:
+        if user is None:
             user = ctx.author
 
         walker = Image.open("./images/walker.jpeg")

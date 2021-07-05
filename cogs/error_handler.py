@@ -1,8 +1,6 @@
 import discord
 
 from discord.ext import commands
-from discord.ext.commands import bot
-from discord.ext.commands.errors import MissingRequiredArgument
 
 
 class ErrorHandler(commands.Cog):
@@ -52,7 +50,7 @@ class ErrorHandler(commands.Cog):
             )
             await ctx.send(embed=embed)
 
-        elif isinstance(error, MissingRequiredArgument):
+        elif isinstance(error, commands.MissingRequiredArgument):
             embed = discord.Embed(
                 color=discord.Color.dark_red(),
                 description="{} **Invalid Arguments Provided!**".format(

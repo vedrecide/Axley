@@ -53,9 +53,15 @@ class AxleyHelpCommand(commands.MinimalHelpCommand):
         )
 
         embed.add_field(
-            name=cog.qualified_name
-            + " "
-            + f"({len([command for command in cog.get_commands()])} commands in total)",
+            name=cog.qualified_name + " " + f"""
+            ({
+                len(
+                    [
+                        command for command in cog.get_commands()
+                    ]
+                )
+            } commands in total)
+            """,
             value="`" + "` `".join(a.name for a in cog.get_commands()) + "`",
         )
 

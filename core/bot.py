@@ -10,12 +10,11 @@ dotenv.load_dotenv()
 
 
 class Axley(commands.AutoShardedBot):
-
     def __init__(self):
-        self.bot_cogs = os.listdir('./cogs')
+        self.bot_cogs = os.listdir("./cogs")
         self.cool_emojis = {
-            'tick': '<a:whitetick:849331491699556412>',
-            'cross': '<a:redcross:849331580300165140>'
+            "tick": "<a:whitetick:849331491699556412>",
+            "cross": "<a:redcross:849331580300165140>",
         }
         self.owner = 709613711475605544
         self.github_repo = "https://github.com/1olipop/Axley"
@@ -24,21 +23,21 @@ class Axley(commands.AutoShardedBot):
             intents=discord.Intents.all(),
             owner_id=self.owner,
             case_insensitive=True,
-            help_command=AxleyHelpCommand()
+            help_command=AxleyHelpCommand(),
         )
 
     def load_cogs(self):
         for file in self.bot_cogs:
-            if file.endswith('.py'):
+            if file.endswith(".py"):
                 try:
-                    self.load_extension(f'cogs.{file[:-3]}')
+                    self.load_extension(f"cogs.{file[:-3]}")
                     print("  Loaded '{}' cog".format(file[:-3]))
                 except Exception as exc:
                     raise exc
 
     def db(self):
         cluster = AsyncIOMotorClient(os.getenv("MONGO_URL"))
-        db = cluster['database']
+        db = cluster["database"]
 
         return db
 
@@ -49,14 +48,14 @@ class Axley(commands.AutoShardedBot):
 
     async def prefix(self, bot, msg):
         db = self.db()
-        collection = db['prefix']
+        collection = db["prefix"]
 
-        data = await collection.find_one({'_id': msg.guild.id})
+        data = await collection.find_one({"_id": msg.guild.id})
 
         if not data:
-            prefix = '+'
+            prefix = "+"
         else:
-            prefix = data['prefix']
+            prefix = data["prefix"]
 
         return commands.when_mentioned_or(prefix)(bot, msg)
 
@@ -64,7 +63,7 @@ class Axley(commands.AutoShardedBot):
         await self.change_presence(
             activity=discord.Activity(
                 type=discord.ActivityType.watching,
-                name=f'+help in {len(self.guilds)} guilds'
+                name=f"+help in {len(self.guilds)} guilds",
             )
         )
-        print('Logged in as {}'.format(self.user))
+        print("Logged in as {}".format(self.user))

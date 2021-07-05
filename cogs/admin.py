@@ -13,7 +13,6 @@ from utils.paginator import Pag
 from traceback import format_exception
 
 
-
 class SphinxObjectFileReader:
     BUFSIZE = 16 * 1024
 
@@ -42,26 +41,25 @@ class SphinxObjectFileReader:
             pos = buf.find(b"\n")
             while pos != -1:
                 yield buf[:pos].decode("utf-8")
-                buf = buf[pos + 1:]
+                buf = buf[pos + 1 :]
                 pos = buf.find(b"\n")
 
 
 class Admin(commands.Cog):
-
     def __init__(self, bot):
         self.bot = bot
         self.emojis = self.bot.cool_emojis
 
-    @commands.command(name='Eval', description='Evaluates a Python code', hidden=True)
+    @commands.command(name="Eval", description="Evaluates a Python code", hidden=True)
     @commands.is_owner()
     async def eval(self, ctx, *, code):
         code = clean_code(code)
 
         local_variables = {
-            'discord': discord,
-            'commands': commands,
-            'self': self.bot,
-            'ctx': ctx
+            "discord": discord,
+            "commands": commands,
+            "self": self.bot,
+            "ctx": ctx,
         }
 
         stdout = io.StringIO()
@@ -69,45 +67,48 @@ class Admin(commands.Cog):
         try:
             with contextlib.redirect_stdout(stdout):
                 exec(
-                    f'async def func():\n{textwrap.indent(code,"    ")}', local_variables,)
+                    f'async def func():\n{textwrap.indent(code,"    ")}',
+                    local_variables,
+                )
 
-                obj = await local_variables['func']()
-                result = f'{stdout.getvalue()}\n>>> {obj}\n'
+                obj = await local_variables["func"]()
+                result = f"{stdout.getvalue()}\n>>> {obj}\n"
         except Exception as e:
-            result = ''.join(format_exception(e, e, e.__traceback__))
+            result = "".join(format_exception(e, e, e.__traceback__))
 
         pager = Pag(
             timeout=100,
-            entries=[result[i: i + 2000] for i in range(0, len(result), 2000)],
+            entries=[result[i : i + 2000] for i in range(0, len(result), 2000)],
             length=1,
-            prefix='```py\n',
-            suffix='```',
-            colour=0xc67862,
-            title='{} Output'.format(self.emojis['tick']),
+            prefix="```py\n",
+            suffix="```",
+            colour=0xC67862,
+            title="{} Output".format(self.emojis["tick"]),
         )
 
         await pager.start(ctx)
 
-    @commands.command(name='Reload', description='Reloads a cog..', hidden=True)
+    @commands.command(name="Reload", description="Reloads a cog..", hidden=True)
     @commands.is_owner()
     async def reload(self, ctx, cog: str):
         try:
-            self.bot.reload_extension(f'{cog}')
+            self.bot.reload_extension(f"{cog}")
             embed = discord.Embed(
                 color=discord.Color.dark_theme(),
-                description='{} Successfully reloaded `{}`'.format(
-                    self.emojis['tick'], cog)
+                description="{} Successfully reloaded `{}`".format(
+                    self.emojis["tick"], cog
+                ),
             )
-            await ctx.message.add_reaction('✅')
+            await ctx.message.add_reaction("✅")
             await ctx.message.reply(embed=embed, mention_author=False)
         except Exception as exc:
             embed = discord.Embed(
                 color=discord.Color.dark_theme(),
-                title='{} Error Occured'.format(self.emojis['cross']),
-                description='```yaml\n{}```'.format(exc)
+                title="{} Error Occured".format(self.emojis["cross"]),
+                description="```yaml\n{}```".format(exc),
             )
 
-            await ctx.message.add_reaction('❎')
+            await ctx.message.add_reaction("❎")
             await ctx.message.reply(embed=embed, mention_author=False)
 
     def finder(self, text, collection, *, key=None, lazy=True):
@@ -144,11 +145,9 @@ class Admin(commands.Cog):
 
         line = stream.readline()
         if "zlib" not in line:
-            raise RuntimeError(
-                "Invalid objects.inv file, not z-lib compatible.")
+            raise RuntimeError("Invalid objects.inv file, not z-lib compatible.")
 
-        entry_regex = re.compile(
-            r"(?x)(.+?)\s+(\S*:\S*)\s+(-?\d+)\s+(\S+)\s+(.*)")
+        entry_regex = re.compile(r"(?x)(.+?)\s+(\S*:\S*)\s+(-?\d+)\s+(\S+)\s+(.*)")
         for line in stream.read_compressed_lines():
             match = entry_regex.match(line.rstrip())
             if not match:
@@ -202,22 +201,20 @@ class Admin(commands.Cog):
 
         cache = list(self._rtfm_cache[key].items())
 
-        self.matches = self.finder(
-            obj, cache, key=lambda t: t[0], lazy=False)[:8]
+        self.matches = self.finder(obj, cache, key=lambda t: t[0], lazy=False)[:8]
 
         embed = discord.Embed(color=discord.Color.dark_theme())
         if len(self.matches) == 0:
             return await ctx.send("Could not find anything. Sorry.")
 
-        embed.description = "\n".join(
-            f"[`{key}`]({url})" for key, url in self.matches)
+        embed.description = "\n".join(f"[`{key}`]({url})" for key, url in self.matches)
         await ctx.message.reply(embed=embed, mention_author=False)
 
     @commands.command(
         name="Rtfm",
         description="Gives you a documentation link for a discord.py entity.",
         aliases=["Rtfd"],
-        hidden=True
+        hidden=True,
     )
     async def rtfm(self, ctx, *, query: str):
         key = "latest"

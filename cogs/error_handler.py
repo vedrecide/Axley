@@ -6,10 +6,10 @@ from discord.ext.commands.errors import MissingRequiredArgument
 
 
 class ErrorHandler(commands.Cog):
-    '''
+    """
     Don't complain I have a error handler for almost every moderation command
     This one is for everything is common
-    '''
+    """
 
     def __init__(self, bot):
         self.bot = bot
@@ -20,8 +20,9 @@ class ErrorHandler(commands.Cog):
         if isinstance(error, commands.MemberNotFound):
             embed = discord.Embed(
                 color=discord.Color.dark_red(),
-                description='{} Mentioned member is not in the guild'.format(
-                    self.emojis['cross'])
+                description="{} Mentioned member is not in the guild".format(
+                    self.emojis["cross"]
+                ),
             )
 
             await ctx.send(embed=embed)
@@ -29,8 +30,9 @@ class ErrorHandler(commands.Cog):
         elif isinstance(error, commands.NotOwner):
             embed = discord.Embed(
                 color=discord.Color.dark_red(),
-                description='{} **Owner only command >:(**'.format(
-                    self.emojis['cross'])
+                description="{} **Owner only command >:(**".format(
+                    self.emojis["cross"]
+                ),
             )
 
             await ctx.send(embed=embed)
@@ -38,26 +40,30 @@ class ErrorHandler(commands.Cog):
         elif isinstance(error, commands.BadArgument):
             embed = discord.Embed(
                 color=discord.Color.dark_red(),
-                description='{} **Invalid Arguments Provided!**'.format(
-                    self.emojis['cross'])
+                description="{} **Invalid Arguments Provided!**".format(
+                    self.emojis["cross"]
+                ),
             )
             embed.add_field(
-                name='Correct Way',
-                value='```yaml\n{}{} {}```'.format(
-                    ctx.prefix, ctx.command, ctx.command.signature)
+                name="Correct Way",
+                value="```yaml\n{}{} {}```".format(
+                    ctx.prefix, ctx.command, ctx.command.signature
+                ),
             )
             await ctx.send(embed=embed)
 
         elif isinstance(error, MissingRequiredArgument):
             embed = discord.Embed(
                 color=discord.Color.dark_red(),
-                description='{} **Invalid Arguments Provided!**'.format(
-                    self.emojis['cross'])
+                description="{} **Invalid Arguments Provided!**".format(
+                    self.emojis["cross"]
+                ),
             )
             embed.add_field(
-                name='Correct Way',
-                value='```yaml\n{}{} {}```'.format(
-                    ctx.prefix, ctx.command, ctx.command.signature)
+                name="Correct Way",
+                value="```yaml\n{}{} {}```".format(
+                    ctx.prefix, ctx.command, ctx.command.signature
+                ),
             )
             await ctx.send(embed=embed)
 

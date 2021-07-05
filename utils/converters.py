@@ -6,19 +6,13 @@ class TimeConverter(commands.Converter):
         amount = arg[:-1]
         unit = arg[-1]
 
-        if amount.isdigit() and unit in [
-            's',
-            'm',
-            'h',
-            'd',
-            'w'
-        ]:
+        if amount.isdigit() and unit in ["s", "m", "h", "d", "w"]:
             return (int(amount), unit)
 
         raise commands.BadArgument(
-            message='''
+            message="""
                 Duration is not valid!\nAnd it only supports till weeks or `w`
-            '''
+            """
         )
 
 

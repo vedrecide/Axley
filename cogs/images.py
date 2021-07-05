@@ -6,16 +6,11 @@ from io import BytesIO
 
 
 class Images(commands.Cog):
-
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command(
-        name="Walker",
-        aliases=[
-            'Aw'
-        ],
-        description="Send's you being Alan Walker OwO"
+        name="Walker", aliases=["Aw"], description="Send's you being Alan Walker OwO"
     )
     @commands.guild_only()
     async def walker(self, ctx: commands.Context, user: discord.Member = None):

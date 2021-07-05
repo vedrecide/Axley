@@ -100,7 +100,11 @@ class General(commands.Cog):
 
     @commands.command(
         name="ServerInfo",
-        aliases=["Si", "GuildInfo", "Gi"],
+        aliases=[
+            "Si",
+            "GuildInfo",
+            "Gi"
+        ],
         description="Show's the respective guild's server info",
     )
     @commands.guild_only()

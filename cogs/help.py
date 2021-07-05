@@ -6,7 +6,11 @@ from discord.ext import commands
 
 class AxleyHelpCommand(commands.MinimalHelpCommand):
     def __init__(self):
-        super().__init__(command_attrs={"verify_checks": False})
+        super().__init__(
+            command_attrs={
+                "verify_checks": False
+            }
+        )
 
     def get_something(self, command):
         return command.qualified_name

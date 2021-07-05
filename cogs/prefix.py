@@ -77,14 +77,23 @@ class Prefix(commands.Cog):
                 await ctx.message.add_reaction("❎")
             else:
                 await self.collection.update_one(
-                    {"_id": ctx.guild.id}, {"$set": {"prefix": str(pre)}}
+                    {
+                        "_id": ctx.guild.id
+                    },
+                    {
+                        "$set": {
+                            "prefix": str(pre)
+                        }
+                    }
                 )
 
                 embed = discord.Embed(
                     color=discord.Color.magenta(),
                     description="""
-                    {} Successfully changed the custom prefix of this server to `{}`""".format(
-                        self.emojis["tick"], pre
+                    {} Successfully changed the custom prefix of this server to `{}`
+                    """.format(
+                        self.emojis["tick"],
+                        pre
                     ),
                 )
                 await ctx.send(embed=embed)
@@ -104,14 +113,25 @@ class Prefix(commands.Cog):
 
     @commands.command(
         name="DeletePrefix",
-        aliases=["Delprefix", "Dp", "Delpre"],
-        description="Delete's the custom prefix of the bot, leaving it to the default prefix which is `+`",
+        aliases=[
+            "Delprefix",
+            "Dp",
+            "Delpre"
+        ],
+        description="""
+        Delete's the custom prefix of the bot,
+        leaving it to the default prefix which is `+`
+        """,
     )
     @commands.guild_only()
     @commands.has_permissions(manage_messages=True)
     async def delprefix(self, ctx: commands.Context):
 
-        data = await self.collection.find_one({"_id": ctx.guild.id})
+        data = await self.collection.find_one(
+            {
+                "_id": ctx.guild.id
+            }
+        )
 
         if not data:
             embed = discord.Embed(
@@ -125,22 +145,32 @@ class Prefix(commands.Cog):
             await self.collection.delete_one({"_id": ctx.guild.id})
             embed = discord.Embed(
                 color=discord.Color.magenta(),
-                description="{} **{}'s** custom prefix has been deleted".format(
-                    self.cross["tick"], ctx.guild
+                description="""
+                {} **{}'s** custom prefix has been deleted
+                """.format(
+                self.cross["tick"], ctx.guild
                 ),
             )
             await ctx.send(embed=embed)
 
-    @commands.command(name="ViewPrefix", description="View the guild's prefix")
+    @commands.command(
+        name="ViewPrefix",
+        description="View the guild's prefix"
+    )
     @commands.guild_only()
     async def viewprefix(self, ctx):
-        data = await self.collection.find_one({"_id": ctx.guild.id})
+        data = await self.collection.find_one(
+            {
+                "_id": ctx.guild.id
+            }
+        )
 
         if not data:
             embed = discord.Embed(
                 color=discord.Color.magenta(),
                 description="{} **{}'s** prefix is `+`".format(
-                    self.emojis["tick"], ctx.guild
+                    self.emojis["tick"],
+                    ctx.guild
                 ),
             )
             await ctx.message.reply(embed=embed, mention_author=False)
@@ -149,7 +179,9 @@ class Prefix(commands.Cog):
             embed = discord.Embed(
                 color=discord.Color.magenta(),
                 description="{} **{}'s** prefix is `{}`".format(
-                    self.emojis["tick"], ctx.guild, data["prefix"]
+                    self.emojis["tick"],
+                    ctx.guild,
+                    data["prefix"]
                 ),
             )
             await ctx.message.reply(embed=embed, mention_author=False)

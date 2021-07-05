@@ -25,7 +25,7 @@ class Moderation(commands.Cog):
     async def purge(
         self, ctx: commands.Context, amount: int, member: discord.Member = None
     ):
-        if member == None:
+        if member is None:
             try:
                 if amount <= -1:
                     embed = discord.Embed(
@@ -230,10 +230,12 @@ class Moderation(commands.Cog):
             embed = discord.Embed(
                 color=discord.Color.dark_purple(),
                 description="{} Looks like **{}** isn't found (Not in the bot's reach sadly)".format(
-                    self.emojis["cross"], member
+                    self.emojis["cross"],
+                    member
                 ),
             )
             await ctx.send(embed=embed)
+            raise exc
 
     @ban.error
     async def ban_error(self, ctx, error):

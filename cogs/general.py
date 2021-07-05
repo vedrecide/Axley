@@ -87,16 +87,13 @@ class General(commands.Cog):
     )
     async def embed(self, ctx, *, data):
         try:
-            try:
                 data = clean_code(data)
                 data = res = json.loads(data)
 
                 if isinstance(data, dict):
                     embed = discord.Embed.from_dict(data)
                     await ctx.send(embed=embed)
-            except Exception as exc:
-                await ctx.send(exc)
-        except:
+        except Exception as exc:
             embed = discord.Embed(color=0x2F3136, description=data)
             await ctx.send(embed=embed)
 

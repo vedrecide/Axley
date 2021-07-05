@@ -16,7 +16,10 @@ class TimeConverter(commands.Converter):
             return (int(amount), unit)
 
         raise commands.BadArgument(
-            message='Duration is not valid!\nAnd it only supports till weeks or `w`')
+            message='''
+                Duration is not valid!\nAnd it only supports till weeks or `w`
+            '''
+        )
 
 
 class MemberID(commands.Converter):
@@ -28,6 +31,7 @@ class MemberID(commands.Converter):
                 return int(argument, base=10)
             except ValueError:
                 raise commands.BadArgument(
-                    f"{argument} is not a valid member or member ID.") from None
+                    f"{argument} is not a valid member or member ID."
+                ) from None
         else:
             return m.id

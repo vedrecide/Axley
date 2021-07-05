@@ -61,5 +61,10 @@ class Axley(commands.AutoShardedBot):
         return commands.when_mentioned_or(prefix)(bot, msg)
 
     async def on_ready(self):
-        await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f'+help in {len(self.guilds)} guilds'))
+        await self.change_presence(
+            activity=discord.Activity(
+                type=discord.ActivityType.watching,
+                name=f'+help in {len(self.guilds)} guilds'
+            )
+        )
         print('Logged in as {}'.format(self.user))

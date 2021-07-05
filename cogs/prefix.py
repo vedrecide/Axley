@@ -28,8 +28,12 @@ class Prefix(commands.Cog):
         if not data:
             embed = discord.Embed(
                 color=discord.Color.magenta(),
-                description='Are you sure you want to set the server prefix to `{}` ?\nIf not, then you can leave this message as it is without reacting..'.format(
-                    pre)
+                description='''
+                Are you sure you want to set the server prefix to `{}` ?\n
+                If not, then you can leave this message as it is without reacting..
+                '''.format(
+                    pre
+                )
             )
             message = await ctx.send(embed=embed)
             await message.add_reaction('✅')
@@ -67,11 +71,24 @@ class Prefix(commands.Cog):
             except asyncio.TimeoutError:
                 await ctx.message.add_reaction('❎')
             else:
-                await self.collection.update_one({'_id': ctx.guild.id}, {'$set': {'prefix': str(pre)}})
+                await self.collection.update_one(
+                    {
+                        '_id': ctx.guild.id
+                    },
+                    {
+                        '$set': {
+                            'prefix': str(pre)
+                        }
+                    }
+                )
+
                 embed = discord.Embed(
                     color=discord.Color.magenta(),
-                    description="{} Successfully changed the custom prefix of this server to `{}`".format(
-                        self.emojis['tick'], pre)
+                    description="""
+                    {} Successfully changed the custom prefix of this server to `{}`""".format(
+                        self.emojis['tick'],
+                        pre
+                    )
                 )
                 await ctx.send(embed=embed)
 
@@ -80,7 +97,9 @@ class Prefix(commands.Cog):
         if isinstance(error, commands.MissingPermissions):
             embed = discord.Embed(
                 color=discord.Color.dark_orange(),
-                description="{} You are missing `Manage Messages` Permission(s) to run this command".format(
+                description="""
+                {} You are missing `Manage Messages` Permission(s) to run this command
+                """.format(
                     self.emojis['cross'])
             )
             await ctx.send(embed=embed)

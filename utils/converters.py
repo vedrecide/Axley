@@ -1,5 +1,6 @@
 from discord.ext import commands
 
+
 class TimeConverter(commands.Converter):
     async def convert(self, ctx, arg):
         amount = arg[:-1]
@@ -14,7 +15,9 @@ class TimeConverter(commands.Converter):
         ]:
             return (int(amount), unit)
 
-        raise commands.BadArgument(message='Duration is not valid!\nAnd it only supports till weeks or `w`')
+        raise commands.BadArgument(
+            message='Duration is not valid!\nAnd it only supports till weeks or `w`')
+
 
 class MemberID(commands.Converter):
     async def convert(self, ctx, argument):
@@ -24,6 +27,7 @@ class MemberID(commands.Converter):
             try:
                 return int(argument, base=10)
             except ValueError:
-                raise commands.BadArgument(f"{argument} is not a valid member or member ID.") from None
+                raise commands.BadArgument(
+                    f"{argument} is not a valid member or member ID.") from None
         else:
             return m.id

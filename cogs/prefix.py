@@ -1,6 +1,8 @@
-import discord, pymongo, asyncio
+import discord
+import asyncio
 
 from discord.ext import commands
+
 
 class Prefix(commands.Cog):
 
@@ -26,7 +28,8 @@ class Prefix(commands.Cog):
         if not data:
             embed = discord.Embed(
                 color=discord.Color.magenta(),
-                description='Are you sure you want to set the server prefix to `{}` ?\nIf not, then you can leave this message as it is without reacting..'.format(pre)
+                description='Are you sure you want to set the server prefix to `{}` ?\nIf not, then you can leave this message as it is without reacting..'.format(
+                    pre)
             )
             message = await ctx.send(embed=embed)
             await message.add_reaction('✅')
@@ -43,13 +46,15 @@ class Prefix(commands.Cog):
                 await self.collection.insert_one({'_id': ctx.guild.id, 'prefix': str(pre)})
                 embed = discord.Embed(
                     color=discord.Color.magenta(),
-                    description="{} Successfully changed the custom prefix of this server to `{}`".format(self.emojis['tick'], pre)
+                    description="{} Successfully changed the custom prefix of this server to `{}`".format(
+                        self.emojis['tick'], pre)
                 )
                 await ctx.message.reply(embed=embed)
         else:
             embed = discord.Embed(
                 color=discord.Color.magenta(),
-                description='Are you sure you want to update the server prefix to `{}` ?'.format(pre)
+                description='Are you sure you want to update the server prefix to `{}` ?'.format(
+                    pre)
             )
             message = await ctx.send(embed=embed)
             await message.add_reaction('✅')
@@ -65,7 +70,8 @@ class Prefix(commands.Cog):
                 await self.collection.update_one({'_id': ctx.guild.id}, {'$set': {'prefix': str(pre)}})
                 embed = discord.Embed(
                     color=discord.Color.magenta(),
-                    description="{} Successfully changed the custom prefix of this server to `{}`".format(self.emojis['tick'], pre)
+                    description="{} Successfully changed the custom prefix of this server to `{}`".format(
+                        self.emojis['tick'], pre)
                 )
                 await ctx.send(embed=embed)
 
@@ -74,7 +80,8 @@ class Prefix(commands.Cog):
         if isinstance(error, commands.MissingPermissions):
             embed = discord.Embed(
                 color=discord.Color.dark_orange(),
-                description="{} You are missing `Manage Messages` Permission(s) to run this command".format(self.emojis['cross'])
+                description="{} You are missing `Manage Messages` Permission(s) to run this command".format(
+                    self.emojis['cross'])
             )
             await ctx.send(embed=embed)
 
@@ -96,17 +103,18 @@ class Prefix(commands.Cog):
         if not data:
             embed = discord.Embed(
                 color=discord.Color.magenta(),
-                description="{} **{}** doesn't have any custom prefix".format(self.cross['cross'], ctx.guild)
+                description="{} **{}** doesn't have any custom prefix".format(
+                    self.cross['cross'], ctx.guild)
             )
             await ctx.send(embed=embed)
         else:
             await self.collection.delete_one({'_id': ctx.guild.id})
             embed = discord.Embed(
                 color=discord.Color.magenta(),
-                description="{} **{}'s** custom prefix has been deleted".format(self.cross['tick'], ctx.guild)
+                description="{} **{}'s** custom prefix has been deleted".format(
+                    self.cross['tick'], ctx.guild)
             )
             await ctx.send(embed=embed)
-
 
     @commands.command(
         name='ViewPrefix',
@@ -119,14 +127,16 @@ class Prefix(commands.Cog):
         if not data:
             embed = discord.Embed(
                 color=discord.Color.magenta(),
-                description="{} **{}'s** prefix is `+`".format(self.emojis['tick'], ctx.guild)
+                description="{} **{}'s** prefix is `+`".format(
+                    self.emojis['tick'], ctx.guild)
             )
             await ctx.message.reply(embed=embed, mention_author=False)
 
         else:
             embed = discord.Embed(
                 color=discord.Color.magenta(),
-                description="{} **{}'s** prefix is `{}`".format(self.emojis['tick'], ctx.guild, data['prefix'])
+                description="{} **{}'s** prefix is `{}`".format(
+                    self.emojis['tick'], ctx.guild, data['prefix'])
             )
             await ctx.message.reply(embed=embed, mention_author=False)
 

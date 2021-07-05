@@ -1,17 +1,18 @@
-import discord, textwrap, io, contextlib, re, zlib, aiohttp, os
+import discord
+import textwrap
+import io
+import contextlib
+import re
+import zlib
+import aiohttp
+import os
 
 from discord.ext import commands
 from utils.paginator import clean_code
 from utils.paginator import Pag
 from traceback import format_exception
 
-'''
-Probably cba to make a RTFM command so I took it from 
-https://github.com/MenuDocs/Pyro/blob/master/cogs/docs.py
 
-Thanks to Menudocs for that, Probably not a public command but for my server as well as for me lol
-(if pleb is seeing this, just understand that I can't be bothered to make my own rtfm xD)
-'''
 
 class SphinxObjectFileReader:
     BUFSIZE = 16 * 1024
@@ -41,8 +42,9 @@ class SphinxObjectFileReader:
             pos = buf.find(b"\n")
             while pos != -1:
                 yield buf[:pos].decode("utf-8")
-                buf = buf[pos + 1 :]
+                buf = buf[pos + 1:]
                 pos = buf.find(b"\n")
+
 
 class Admin(commands.Cog):
 
@@ -66,7 +68,8 @@ class Admin(commands.Cog):
 
         try:
             with contextlib.redirect_stdout(stdout):
-                exec(f'async def func():\n{textwrap.indent(code,"    ")}', local_variables,)
+                exec(
+                    f'async def func():\n{textwrap.indent(code,"    ")}', local_variables,)
 
                 obj = await local_variables['func']()
                 result = f'{stdout.getvalue()}\n>>> {obj}\n'
@@ -92,7 +95,8 @@ class Admin(commands.Cog):
             self.bot.reload_extension(f'{cog}')
             embed = discord.Embed(
                 color=discord.Color.dark_theme(),
-                description='{} Successfully reloaded `{}`'.format(self.emojis['tick'], cog)
+                description='{} Successfully reloaded `{}`'.format(
+                    self.emojis['tick'], cog)
             )
             await ctx.message.add_reaction('✅')
             await ctx.message.reply(embed=embed, mention_author=False)
@@ -140,9 +144,11 @@ class Admin(commands.Cog):
 
         line = stream.readline()
         if "zlib" not in line:
-            raise RuntimeError("Invalid objects.inv file, not z-lib compatible.")
+            raise RuntimeError(
+                "Invalid objects.inv file, not z-lib compatible.")
 
-        entry_regex = re.compile(r"(?x)(.+?)\s+(\S*:\S*)\s+(-?\d+)\s+(\S+)\s+(.*)")
+        entry_regex = re.compile(
+            r"(?x)(.+?)\s+(\S*:\S*)\s+(-?\d+)\s+(\S+)\s+(.*)")
         for line in stream.read_compressed_lines():
             match = entry_regex.match(line.rstrip())
             if not match:
@@ -196,13 +202,15 @@ class Admin(commands.Cog):
 
         cache = list(self._rtfm_cache[key].items())
 
-        self.matches = self.finder(obj, cache, key=lambda t: t[0], lazy=False)[:8]
+        self.matches = self.finder(
+            obj, cache, key=lambda t: t[0], lazy=False)[:8]
 
         embed = discord.Embed(color=discord.Color.dark_theme())
         if len(self.matches) == 0:
             return await ctx.send("Could not find anything. Sorry.")
 
-        embed.description = "\n".join(f"[`{key}`]({url})" for key, url in self.matches)
+        embed.description = "\n".join(
+            f"[`{key}`]({url})" for key, url in self.matches)
         await ctx.message.reply(embed=embed, mention_author=False)
 
     @commands.command(
@@ -214,6 +222,7 @@ class Admin(commands.Cog):
     async def rtfm(self, ctx, *, query: str):
         key = "latest"
         await self.do_rtfm(ctx, key, query)
+
 
 def setup(bot):
     bot.add_cog(Admin(bot))

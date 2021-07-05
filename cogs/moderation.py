@@ -1,4 +1,6 @@
-import discord, asyncio, datetime
+import discord
+import asyncio
+import datetime
 
 from discord.ext import commands
 from utils.converters import (TimeConverter, MemberID)
@@ -405,6 +407,39 @@ class Moderation(commands.Cog):
                 description="{} You are missing `Manage Messages` Permission(s) to run this command".format(self.emojis['cross'])
             )
             await ctx.send(embed=embed)
+
+    @commands.group(
+        name="Muterole",
+        aliases=[
+            "Mr",
+            "Mrole",
+            "Muter"
+        ],
+        description="Muterole grouped command consisting of other sub commands <3"
+    )
+    @commands.guild_only()
+    @commands.has_permissions(manage_roles=True)
+    @commands.bot_has_permissions(manage_roles=True)
+    async def muterole(self, ctx: commands.Context):
+        if ctx.invoke.command is None:
+            pass
+
+    @muterole.command(
+        name="Set",
+        aliases=[
+            "Add"
+        ],
+        description="Set's the muterole of the guild"
+    )
+    @commands.guild_only()
+    async def set(self, ctx: commands.Context, role: discord.Role):
+        data = await self.muterole_collection.find_one({'_id': ctx.guild.id})
+
+        if not data:
+            await self.muterole_collection.insert_one({'_id': ctx.guild.id, 'muterole': role.id})
+
+        else:
+            await self.muterole_collection.update_one({'_id': ctx.guild.id}, {'$set': {'muterole': role.id}})
 
 
 def setup(bot):

@@ -1,7 +1,11 @@
-import discord, random, asyncio, http
+import discord
+import random
+import asyncio
+import http
 
 from discord.ext import commands
 from aiohttp import ClientSession
+
 
 class Fun(commands.Cog):
 
@@ -41,23 +45,25 @@ class Fun(commands.Cog):
         ]
 
         if not text:
-            await ctx.message.reply('{} **{}** has paid their respect'.format(random.choice(emojis), ctx.author), mention_author = False)
+            await ctx.message.reply('{} **{}** has paid their respect'.format(random.choice(emojis), ctx.author), mention_author=False)
         else:
-            await ctx.message.reply('{} **{}** has paid their respect for **{}**'.format(random.choice(emojis), ctx.author, text), mention_author = False)
+            await ctx.message.reply('{} **{}** has paid their respect for **{}**'.format(random.choice(emojis), ctx.author, text), mention_author=False)
 
     @commands.command(
         name="Meme",
-        aliases = ["meemee", "memes"],
+        aliases=["meemee", "memes"],
         description="Send's a random meme from reddit :3"
     )
     @commands.guild_only()
     async def meme(self, ctx: commands.Context):
         embed = discord.Embed(color=discord.Color.dark_blue())
-        embed.set_footer(text='Requested by {}'.format(ctx.author), icon_url='{}'.format(ctx.author.avatar_url))
+        embed.set_footer(text='Requested by {}'.format(
+            ctx.author), icon_url='{}'.format(ctx.author.avatar_url))
 
         async with self.session.get('https://www.reddit.com/r/dankmemes/new.json?sort=hot') as r:
             res = await r.json()
-            embed.set_image(url=res['data']['children'] [random.randint(0, 25)]['data']['url'])
+            embed.set_image(url=res['data']['children']
+                            [random.randint(0, 25)]['data']['url'])
             await ctx.send(embed=embed)
 
     @commands.command(
@@ -98,7 +104,8 @@ class Fun(commands.Cog):
 
         embed = discord.Embed(
             color=discord.Color.dark_purple(),
-            description="**Question:** {}\n**Answer:** {}".format(question, answer),
+            description="**Question:** {}\n**Answer:** {}".format(
+                question, answer),
             timestamp=ctx.message.created_at
         )
         embed.set_author(

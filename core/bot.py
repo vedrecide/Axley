@@ -1,10 +1,13 @@
-import discord, os, dotenv
+import discord
+import os
+import dotenv
 
 from discord.ext import commands
 from motor.motor_asyncio import AsyncIOMotorClient
 from cogs.help import AxleyHelpCommand
 
 dotenv.load_dotenv()
+
 
 class Axley(commands.AutoShardedBot):
 
@@ -15,6 +18,7 @@ class Axley(commands.AutoShardedBot):
             'cross': '<a:redcross:849331580300165140>'
         }
         self.owner = 709613711475605544
+        self.github_repo = "https://github.com/1olipop/Axley"
         super().__init__(
             command_prefix=self.prefix,
             intents=discord.Intents.all(),
@@ -22,7 +26,6 @@ class Axley(commands.AutoShardedBot):
             case_insensitive=True,
             help_command=AxleyHelpCommand()
         )
-
 
     def load_cogs(self):
         for file in self.bot_cogs:
@@ -32,7 +35,6 @@ class Axley(commands.AutoShardedBot):
                     print("  Loaded '{}' cog".format(file[:-3]))
                 except Exception as exc:
                     raise exc
-
 
     def db(self):
         cluster = AsyncIOMotorClient(os.getenv("MONGO_URL"))

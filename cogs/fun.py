@@ -69,13 +69,19 @@ class Fun(commands.Cog):
         ) as r:
             res = await r.json()
             embed.set_image(
-                url=res["data"]["children"][random.randint(0, 25)]["data"]["url"]
+                url=res[
+                    "data"
+                ]["children"][random.randint(0, 25)]["data"]["url"]
             )
             await ctx.send(embed=embed)
 
     @commands.command(
         name="Eighball",
-        aliases=["8ball", "Eb", "8b"],
+        aliases=[
+            "8ball",
+            "Eb",
+            "8b"
+        ],
         description="Send's an 8ball answer to your random question",
     )
     @commands.guild_only()
@@ -107,7 +113,9 @@ class Fun(commands.Cog):
 
         embed = discord.Embed(
             color=discord.Color.dark_purple(),
-            description="**Question:** {}\n**Answer:** {}".format(question, answer),
+            description="""
+            **Question:** {}\n**Answer:** {}
+            """.format(question, answer),
             timestamp=ctx.message.created_at,
         )
         embed.set_author(

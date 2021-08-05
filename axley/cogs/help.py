@@ -1,4 +1,3 @@
-from sys import prefix
 import discord
 import typing
 import datetime

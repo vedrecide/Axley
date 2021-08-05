@@ -4,4 +4,3 @@ services:
     bot:
         container_name: axley_bot
         build: .
-        env_file: .env

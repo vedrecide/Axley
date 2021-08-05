@@ -1,0 +1,6 @@
+{
+    "token": "BOT TOKEN HERE",
+    "mongo_url": "MONGO DATBASE URL HERE",
+    "giphy_api": "GIPHY API KEY GOES HERE",
+    "owner": "OWNERS DISCORD ID GOES HERE"
+}

@@ -2,7 +2,8 @@ import discord
 import json
 
 from discord.ext import commands
-from utils.paginator import clean_code
+from axley.utils.paginator import clean_code
+from worldometer import current_world_population
 
 
 class General(commands.Cog):
@@ -75,7 +76,7 @@ class General(commands.Cog):
         )
         embed.add_field(
             name=f"Roles ({len(roles)})",
-            value=" ".join([role.mention for role in roles]),
+            value="{}".format(roles),
             inline=False,
         )
         embed.add_field(name="Top role:", value=member.top_role.mention, inline=False)
@@ -83,7 +84,9 @@ class General(commands.Cog):
         await ctx.message.reply(embed=embed, mention_author=False)
 
     @commands.command(
-        name="EmbedBuilder", aliases=["Embed"], description="Embed Builder using JSON"
+        name="Embed",
+        aliases=["EmbedBuilder"],
+        description="Embed Builder using JSON"
     )
     async def embed(self, ctx, *, data):
         try:
@@ -93,10 +96,9 @@ class General(commands.Cog):
             if isinstance(data, dict):
                 embed = discord.Embed.from_dict(data)
                 await ctx.send(embed=embed)
-        except Exception as exc:
+        except Exception:
             embed = discord.Embed(color=0x2F3136, description=data)
             await ctx.send(embed=embed)
-            raise exc
 
     @commands.command(
         name="ServerInfo",
@@ -144,6 +146,17 @@ class General(commands.Cog):
             inline=False,
         )
         await ctx.send(embed=embed)
+
+    @commands.command(
+        name="WorldPopulation",
+        aliases=["WP"],
+        description="Total World Population :')"
+    )
+    @commands.guild_only()
+    async def world_population(self, ctx: commands.Context):
+        message = await ctx.send("Getting Current World Population..")
+        wp = current_world_population()['current_world_population']
+        await message.edit(content=f"{wp} hoomans")
 
 
 def setup(bot):

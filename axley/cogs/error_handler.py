@@ -50,6 +50,14 @@ class ErrorHandler(commands.Cog):
             )
             await ctx.send(embed=embed)
 
+        elif isinstance(error, commands.CommandOnCooldown):
+            amount_left_in_seconds = (str(error.retry_after))
+            final_time = amount_left_in_seconds.partition('.')
+            embed = discord.Embed(
+                title="{} Woah, Take a rest".format(self.emojis['cross']),
+                description="Kindly wait for {} to use the command again".format(final_time)
+            )
+
         elif isinstance(error, commands.MissingRequiredArgument):
             embed = discord.Embed(
                 color=discord.Color.dark_red(),

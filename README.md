@@ -2,7 +2,7 @@
   ![Python-Version](https://img.shields.io/badge/python-3.9-green?style=flat-square)
   ![MongoDB](https://img.shields.io/badge/motor-2.4.0-pink?style=flat-square)
 
-# Axley | A multi purpose discord bot (Under Construction)
+<h1 style="text-align: center;">Axley</h1>
 
 A simple multi-purpose Discord bot being made using Discord.py API wrapper..
 

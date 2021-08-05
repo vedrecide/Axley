@@ -17,7 +17,7 @@ class Images(commands.Cog):
         if user is None:
             user = ctx.author
 
-        walker = Image.open("./images/walker.jpeg")
+        walker = Image.open("./axley/images/walker.jpeg")
 
         asset = user.avatar_url_as(size=128)
         data = BytesIO(await asset.read())
@@ -27,9 +27,15 @@ class Images(commands.Cog):
 
         walker.paste(pfp, (175, 60))
 
-        walker.save("./images/profile.jpg")
+        walker.save("./axley/images/profile.jpg")
 
-        await ctx.send(file=discord.File("./images/profile.jpg"))
+        embed = discord.Embed(
+            title="Looking good {}".format(user.display_name),
+            color=0xD9E6D1
+        )
+        file = discord.File("./axley/images/profile.jpg", filename="image.png")
+        embed.set_image(url="attachment://image.png")
+        await ctx.send(embed=embed, file=file)
 
 
 def setup(bot):

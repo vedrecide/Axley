@@ -1,6 +1,8 @@
 import discord
 import random
 import asyncio
+import requests
+import json
 
 from discord.ext import commands
 from aiohttp import ClientSession
@@ -76,7 +78,7 @@ class Fun(commands.Cog):
             await ctx.send(embed=embed)
 
     @commands.command(
-        name="Eighball",
+        name="Eightball",
         aliases=[
             "8ball",
             "Eb",
@@ -124,6 +126,61 @@ class Fun(commands.Cog):
         )
 
         await ctx.message.reply(embed=embed, mention_author=False)
+
+    @commands.command(
+        name="Joke",
+        description="Send's you a random joke.."
+    )
+    @commands.guild_only()
+    async def joke(self, ctx: commands.Context):
+        response = json.loads(
+            requests.get("https://tambalapi.herokuapp.com").text
+        )
+
+        await ctx.message.reply(
+            "{}".format(
+                response[0]["joke"]
+            ),
+            mention_author=False
+        )
+
+    @commands.command(
+        name="Giphy",
+        aliases=["GIF"],
+        description="Search any GIF from Giphy :)",
+        pass_context=True
+    )
+    @commands.guild_only()
+    async def giphy(self, ctx: commands.Context, *, search: str):
+        embed = discord.Embed(
+            title="Result of \"{}\"".format(search),
+            color=discord.Colour.blue()
+        )
+
+        if search == '':
+            response = await self.session.get(
+                'https://api.giphy.com/v1/gifs/random?api_key={}'.format(self.bot.config['giphy_api'])
+            )
+            data = json.loads(await response.text())
+            embed.set_image(
+                url=data['data']['images']['original']['url']
+            )
+            embed.set_footer(
+                text="Requested by {}".format(ctx.author),
+                icon_url="{}".format(ctx.author.avatar_url)
+            )
+        else:
+            search.replace(' ', '+')
+            response = await self.session.get('http://api.giphy.com/v1/gifs/search?q=' + search + '&api_key={}&limit=10'.format(self.bot.config['giphy_api']))
+            data = json.loads(await response.text())
+            gif_choice = random.randint(0, 9)
+            embed.set_image(url=data['data'][gif_choice]['images']['original']['url'])
+            embed.set_footer(
+                text="Requested by {}".format(ctx.author),
+                icon_url="{}".format(ctx.author.avatar_url)
+            )
+
+        await ctx.send(embed=embed)
 
 
 def setup(bot):

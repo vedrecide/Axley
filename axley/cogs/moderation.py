@@ -3,7 +3,7 @@ import asyncio
 import datetime
 
 from discord.ext import commands
-from utils.converters import TimeConverter, MemberID
+from axley.utils.converters import TimeConverter, MemberID
 
 
 class Moderation(commands.Cog):
@@ -596,7 +596,11 @@ class Moderation(commands.Cog):
             pass
 
     @muterole.command(
-        name="Set", aliases=["Add"], description="Set's the muterole of the guild"
+        name="Set",
+        aliases=[
+            "Add"
+        ],
+        description="Set's the muterole of the guild"
     )
     @commands.guild_only()
     async def set(self, ctx: commands.Context, role: discord.Role):
@@ -611,6 +615,48 @@ class Moderation(commands.Cog):
             await self.muterole_collection.update_one(
                 {"_id": ctx.guild.id}, {"$set": {"muterole": role.id}}
             )
+
+    @muterole.command(
+        name="Create",
+        aliases=[
+            "C"
+        ],
+        description="Create's the Muterole for you"
+    )
+    @commands.guild_only()
+    async def create(self, ctx: commands.Context):
+        data = self.muterole_collection.find_one({"_id": ctx.guild.id})
+
+        if not data:
+            muted_role = discord.utils.get(
+                ctx.guild.roles,
+                name="muted"
+            )
+            
+            if not muted_role:
+                muted_role = await ctx.guild.create_role(name="muted")
+
+                for channel in ctx.guild.channels:
+                    await channel.set_permissions(
+                        muted_role,
+                        speak=False,
+                        send_messages=False,
+                        read_message_history=True,
+                        read_messages=False
+                    )
+
+                await self.muterole_collection.insert_one(
+                    {
+                        "_id": ctx.guild.id,
+                        "muterole": muted_role.id
+                    }
+                )
+
+            else:
+                pass
+        
+        else:
+            pass
 
 
 def setup(bot):

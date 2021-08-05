@@ -4,8 +4,8 @@ import io
 import contextlib
 
 from discord.ext import commands
-from utils.paginator import clean_code
-from utils.paginator import Pag
+from axley.utils.paginator import clean_code
+from axley.utils.paginator import Pag
 from traceback import format_exception
 
 
@@ -20,16 +20,10 @@ class Admin(commands.Cog):
         hidden=True
     )
     @commands.is_owner()
-    async def eval(self, ctx, *, code):
+    async def eval(self, ctx: commands.Context, *, code) -> Pag:
         code = clean_code(code)
 
-        local_variables = {
-            "discord": discord,
-            "commands": commands,
-            "self": self.bot,
-            "ctx": ctx,
-        }
-
+        local_variables = {"discord": discord, "commands": commands, "self": self.bot, "ctx": ctx}
         stdout = io.StringIO()
 
         try:
@@ -58,7 +52,7 @@ class Admin(commands.Cog):
 
     @commands.command(name="Reload", description="Reloads a cog..", hidden=True)
     @commands.is_owner()
-    async def reload(self, ctx, cog: str):
+    async def reload(self, ctx: commands.Context, cog: str):
         try:
             self.bot.reload_extension(f"{cog}")
             embed = discord.Embed(
@@ -78,6 +72,12 @@ class Admin(commands.Cog):
 
             await ctx.message.add_reaction("❎")
             await ctx.message.reply(embed=embed, mention_author=False)
+
+    @commands.command(name="Shutdown", description="Shut the bot", hidden=True)
+    @commands.is_owner()
+    async def shutdown(self, ctx: commands.Context):
+        await ctx.send(":wave:")
+        await self.bot.shutdown()
 
 
 def setup(bot):

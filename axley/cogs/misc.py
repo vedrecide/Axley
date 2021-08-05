@@ -22,8 +22,9 @@ class Misc(commands.Cog):
     @commands.guild_only()
     async def source(self, ctx: commands.Context):
         embed = discord.Embed(
-            color=0xD9E6D1, description=f"[Click]({self.bot.github_repo})"
+            color=0xD9E6D1, description=f"[Click Me!]({self.bot.github_repo})"
         )
+        embed.set_footer(text="Kindly go through the LICENSE file in the repository before blindy checking and copying the codes")
 
         await ctx.message.reply(embed=embed, mention_author=False)
 

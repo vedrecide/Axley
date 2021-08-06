@@ -102,12 +102,11 @@ class Axley(commands.AutoShardedBot):
 
         if not data:
             prefixes = "+"
-            return prefixes
         else:
             for _prefixes in data['prefix']:
                 prefixes.append(_prefixes)
-
-            return prefixes
+            
+        return prefixes
 
     async def on_ready(self):
         await self.change_presence(

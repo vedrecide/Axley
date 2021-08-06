@@ -38,12 +38,13 @@ class ErrorHandler(commands.Cog):
         elif isinstance(error, commands.BadArgument):
             embed = discord.Embed(
                 color=discord.Color.dark_red(),
-                description="{} **Invalid Arguments Provided!**".format(
+                title="{} **Invalid Arguments Provided!**".format(
                     self.emojis["cross"]
                 ),
+                description="Make sure you follow the pattern of arguments given below or the command won't just work"
             )
             embed.add_field(
-                name="Correct Way",
+                name="Command Format",
                 value="```yaml\n{}{} {}```".format(
                     ctx.prefix, ctx.command, ctx.command.signature
                 ),
@@ -61,15 +62,20 @@ class ErrorHandler(commands.Cog):
         elif isinstance(error, commands.MissingRequiredArgument):
             embed = discord.Embed(
                 color=discord.Color.dark_red(),
-                description="{} **Invalid Arguments Provided!**".format(
+                title="{} **Invalid Arguments Provided!**".format(
                     self.emojis["cross"]
                 ),
+                description="Make sure you follow the pattern of arguments given below or the command won't just work"
             )
             embed.add_field(
-                name="Correct Way",
+                name="Command Format",
                 value="```yaml\n{}{} {}```".format(
                     ctx.prefix, ctx.command, ctx.command.signature
                 ),
+            )
+            embed.set_footer(
+                text="Requested by {}".format(ctx.author),
+                icon_url="{}".format(ctx.author.avatar_url)
             )
             await ctx.send(embed=embed)
 

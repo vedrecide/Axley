@@ -39,12 +39,12 @@ class AxleyHelpCommand(DefaultHelpCommand):
                 value='`{}help Prefix`'.format(ctx.prefix)
             )
             z.add_field(
-                name='Misc',
-                value='{}help Misc'.format(ctx.prefix)
+                name='❓ Misc',
+                value='`{}help Misc`'.format(ctx.prefix)
             )
             z.add_field(
-                name='Images',
-                value='{}help Images'.format(ctx.prefix)
+                name='🌄 Images',
+                value='`{}help Images`'.format(ctx.prefix)
             )
             z.add_field(
                 name='\0',
@@ -119,8 +119,28 @@ class AxleyHelpCommand(DefaultHelpCommand):
                 value="[**Invite**](https://discord.com/api/oauth2/authorize?client_id=768380239255568414&permissions=8&scope=bot) **|** [**Community**](https://discord.gg/XJcThGs4Pu) **|** [**Github**](https://github.com/1olipop/Axley)"
             )
             c.set_footer(text="Requested by {}".format(ctx.author), icon_url=f"{ctx.author.avatar_url}")
+            d = discord.Embed(
+                title="Misc",
+                color=0xD9E6D1,
+                description=' '.join(
+                    map(
+                        lambda command: '`' + command.name + '`',
+                        ctx.bot.get_cog('Misc').get_commands()
+                    )
+                ),
+                timestamp=ctx.message.created_at
+            )
+            d.set_author(
+                name='Help - Axley',
+                icon_url='{}'.format(ctx.bot.user.avatar_url)
+            )
+            d.add_field(
+                name='\0',
+                value="[**Invite**](https://discord.com/api/oauth2/authorize?client_id=768380239255568414&permissions=8&scope=bot) **|** [**Community**](https://discord.gg/XJcThGs4Pu) **|** [**Github**](https://github.com/1olipop/Axley)"
+            )
+            d.set_footer(text="Requested by {}".format(ctx.author), icon_url=f"{ctx.author.avatar_url}")
 
-            await self.help.run(ctx, [z, a, b, c], 60, True, True)
+            await self.help.run(ctx, [z, a, b, c, d], 60, True, True)
 
     async def send_cog_help(self, cog):
         ctx: commands.Context = self.context

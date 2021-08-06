@@ -119,9 +119,7 @@ class ButtonPaginator:
                 inter = await wait_for_component(
                     self.client,
                     components=buttons,
-                    check=lambda i: i.component["label"] in component_labels
-                    and i.origin_message_id == msg.id
-                    and i.author.id == context.author.id,
+                    check=lambda i: i.component["label"] in component_labels and i.origin_message_id == msg.id and i.author.id == context.author.id,
                     timeout=int(timeout),
                 )
                 await inter.defer(edit_origin=True)

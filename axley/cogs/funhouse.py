@@ -6,6 +6,7 @@ import json
 
 from discord.ext import commands
 from aiohttp import ClientSession
+from pyfiglet import Figlet
 
 
 class Fun(commands.Cog):
@@ -13,6 +14,10 @@ class Fun(commands.Cog):
         self.bot = bot
         self.emojis = self.bot.cool_emojis
         self.session = ClientSession()
+
+    def ascii_stuff(self, text):
+        font_chosen = Figlet()
+        return str(font_chosen.renderText(text))
 
     @commands.command(
         name="Reverse",
@@ -181,6 +186,23 @@ class Fun(commands.Cog):
             )
 
         await ctx.send(embed=embed)
+
+    @commands.command(
+        name="Ascii",
+        description="Converts a text to ASCII format"
+    )
+    @commands.guild_only()
+    async def ascii(self, ctx, *, word):
+        font_output = self.ascii_stuff(word)
+        embed = discord.Embed(
+            color=discord.Color.dark_purple(),
+            description=f"```\n{font_output}```"
+        )
+        embed.set_author(
+            name="By {}".format(ctx.author),
+            icon_url="{}".format(ctx.author.avatar_url)
+        )
+        await ctx.message.reply(embed=embed, mention_author=False)
 
 
 def setup(bot):

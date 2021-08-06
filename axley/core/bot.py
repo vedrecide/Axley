@@ -8,6 +8,7 @@ from motor.motor_asyncio import AsyncIOMotorClient as MotorClient
 from motor.motor_asyncio import AsyncIOMotorDatabase as BotDatabase
 from typing import List
 
+
 class Axley(commands.AutoShardedBot):
     def __init__(self):
         self.cool_emojis = {
@@ -30,7 +31,6 @@ class Axley(commands.AutoShardedBot):
         self.github_repo = "https://github.com/1olipop/Axley"
         super().__init__(**self.initiate)
         self._load_cogs()
-
 
     def _load_cogs(self):
         for file in self._cogs:

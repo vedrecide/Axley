@@ -632,7 +632,7 @@ class Moderation(commands.Cog):
                 ctx.guild.roles,
                 name="muted"
             )
-            
+
             if not muted_role:
                 muted_role = await ctx.guild.create_role(name="muted")
 

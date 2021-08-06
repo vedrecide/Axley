@@ -6,13 +6,12 @@ from discord.ext import commands
 from axley.utils.buttons import ButtonPaginator
 from discord.ext.commands import DefaultHelpCommand
 
+
 class AxleyHelpCommand(DefaultHelpCommand):
     def __init__(self):
         super().__init__()
 
-    async def send_bot_help(
-        self, mapping: typing.Dict[commands.Cog, typing.List[commands.Command]]
-    ):
+    async def send_bot_help(self, mapping: typing.Dict[commands.Cog, typing.List[commands.Command]]):
             ctx: commands.Context = self.context
             self.help = ButtonPaginator(ctx.bot)
             z = discord.Embed(

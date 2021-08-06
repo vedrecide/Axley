@@ -3,13 +3,13 @@ from discord_slash import SlashCommand
 
 
 def main() -> None:
-    
+
     try:
         import uvloop
         uvloop.install()
-    except:
-        pass
-    
+    except Exception as e:
+        raise e
+
     bot = Axley()
     SlashCommand(bot, sync_commands = True)
     bot.run()

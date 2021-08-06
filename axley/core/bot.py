@@ -105,7 +105,7 @@ class Axley(commands.AutoShardedBot):
         else:
             for _prefixes in data['prefix']:
                 prefixes.append(_prefixes)
-            
+
         return prefixes
 
     async def on_ready(self):

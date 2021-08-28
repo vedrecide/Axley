@@ -6,3 +6,8 @@
 
 <p align="center">A simple multi-purpose Discord bot being made using Discord.py API wrapper..</p>
 
+
+<h1 align="center">Development Info</h1>
+
+<p align="center">Dead because discord.py is no longer maintained.. Gimme some time to rewrite this in Hikari</p>
+
